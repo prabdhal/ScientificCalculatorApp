@@ -16,22 +16,23 @@ namespace CalculatorApp
     private float Calculate()
     {
       float currVal = 0;
-      float prevVal = 0;
-
+      float sum = 0;
+      List<string> calculations = new List<string>();
       bool isAdd = false;
-      bool isSub = false;
+      bool isSub= false;
       bool isDiv = false;
       bool isMulti = false;
+      bool isFirst = true;
 
       for (int i = 0; i < output.Count; i++)
       {
         Console.WriteLine("TryParsing Value: " + output[i]);
-        if (int.TryParse(output[i], out int result))
+        if (int.TryParse(output[i], out int val))
         {
           Console.WriteLine("Value of " + output[i] + " is an int.");
 
           if (currVal == 0)
-            currVal = int.Parse(output[i]);
+            currVal = val;
           else
             currVal = int.Parse(currVal.ToString() + output[i]);
 
@@ -40,38 +41,75 @@ namespace CalculatorApp
         {
           Console.WriteLine("Value of " + output[i] + " is NOT an int.");
 
-          prevVal = currVal;
+          calculations.Add(currVal.ToString());
+          calculations.Add(output[i]);
           currVal = 0;
+        }
+      }
+      calculations.Add(currVal.ToString());
 
-          if (output[i] == "+")
+
+      // Calculate final value
+      int result;
+      for (int i = 0; i < calculations.Count; i++)
+      {
+        if (int.TryParse(calculations[i], out result) && !isAdd
+           && !isSub && !isDiv && !isMulti)
+        {
+          currVal = result;
+          if (isFirst)
           {
-            isAdd = true;
+            sum = currVal;
+            isFirst = false;
           }
-          else if (output[i] == "-")
+        }
+        else if (int.TryParse(calculations[i], out result) && isAdd ||
+          int.TryParse(calculations[i], out result) && isSub ||
+          int.TryParse(calculations[i], out result) && isDiv ||
+          int.TryParse(calculations[i], out result) && isMulti)
+        {
+          if (isAdd)
           {
-            isSub = true;
+            sum += result;
+            isAdd = false;
           }
-          else if (output[i] == "/")
+          else if (isSub)
           {
-            isDiv = true;
+            sum -= result;
+            isSub = false;
           }
-          else if (output[i] == "*")
+          else if (isDiv)
           {
-            isMulti = true;
+            sum /= result;
+            isDiv = false;
+          }
+          else if (isMulti)
+          {
+            sum *= result;
+            isMulti = false;
+          }
+        }
+        else
+        {
+          switch (calculations[i])
+          {
+            case "+":
+              isAdd = true;
+              break;
+            case "-":
+              isSub = true;
+              break;
+            case "/":
+              isDiv = true;
+              break;
+            case "*":
+              isMulti = true;
+              break;
           }
         }
       }
 
-      if (isAdd)
-        return prevVal + currVal;
-      else if (isSub)
-        return prevVal - currVal;
-      else if (isDiv)
-        return prevVal / currVal;
-      else if (isMulti)
-        return prevVal* currVal;
-
-      return 0;
+      return sum;
     }
 
     private void Addition()
