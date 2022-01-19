@@ -406,7 +406,6 @@ namespace CalculatorApp
       this.Controls.Add(this.outputTextBox);
       this.Name = "calculatorForm";
       this.Text = "Calculator";
-      this.Load += new System.EventHandler(this.calculatorForm_Load);
       this.ResumeLayout(false);
       this.PerformLayout();
 
