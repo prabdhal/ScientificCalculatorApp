@@ -34,20 +34,18 @@ namespace CalculatorApp
       // Solve all brackets first
       // Solve all multiplication/division
 
+      
       Stack<string> leftToRightStack = new Stack<string>(inputs);
       Stack<string> rightToLeftStack = new Stack<string>();
-      List<string> dummy = new List<string>();
+      List<string> output = new List<string>(inputs);
       int count = leftToRightStack.Count;
 
       while (response == null)
       {
-        if (dummy.Count > 1)
-        {
-          leftToRightStack = new Stack<string>(dummy);
-          rightToLeftStack.Clear();
-          prevVal = null;
-          count = leftToRightStack.Count;
-        }
+        leftToRightStack = new Stack<string>(output);
+        rightToLeftStack.Clear();
+        prevVal = null;
+        count = leftToRightStack.Count;
 
         if (leftToRightStack.Contains("*") || leftToRightStack.Contains("/"))
         {
@@ -58,6 +56,10 @@ namespace CalculatorApp
             if (i == count - 1)
             {
               rightToLeftStack.Push(val);
+              output.Clear();
+              output = new List<string>(rightToLeftStack);
+              count = output.Count;
+              rightToLeftStack.Clear();
               continue;
             }
             if (rightToLeftStack.Count > 0)
@@ -69,24 +71,37 @@ namespace CalculatorApp
               string sum = (float.Parse(leftToRightStack.Pop()) * float.Parse(rightToLeftStack.Pop())).ToString();
               rightToLeftStack.Push(sum);
               i++;
+
+              if (i == count - 1)
+              {
+                output.Clear();
+                output = new List<string>(rightToLeftStack);
+                count = output.Count;
+                rightToLeftStack.Clear();
+                continue;
+              }
             }
             else if (val == "/" && IsNumber(nextVal) && IsNumber(prevVal))
             {
               string sum = (float.Parse(leftToRightStack.Pop()) / float.Parse(rightToLeftStack.Pop())).ToString();
               rightToLeftStack.Push(sum);
               i++;
+
+              if (i == count - 1)
+              {
+                output.Clear();
+                output = new List<string>(rightToLeftStack);
+                count = output.Count;
+                rightToLeftStack.Clear();
+                continue;
+              }
             }
             else
               rightToLeftStack.Push(val);
           }
         }
 
-        if (rightToLeftStack.Count > 0 && leftToRightStack.Count <= 0)
-          leftToRightStack = new Stack<string>(rightToLeftStack);
-        else if (dummy.Count > 0)
-          leftToRightStack = new Stack<string>(dummy);
-        rightToLeftStack.Clear();
-        count = leftToRightStack.Count;
+        leftToRightStack = new Stack<string>(output);
         prevVal = null;
         // Solve all addition/subtraction
         if (leftToRightStack.Contains("+") || leftToRightStack.Contains("-"))
@@ -98,6 +113,10 @@ namespace CalculatorApp
             if (i == count - 1)
             {
               rightToLeftStack.Push(val);
+              output.Clear();
+              output = new List<string>(rightToLeftStack);
+              count = output.Count;
+              rightToLeftStack.Clear();
               continue;
             }
             if (rightToLeftStack.Count > 0)
@@ -109,12 +128,30 @@ namespace CalculatorApp
               string sum = (float.Parse(leftToRightStack.Pop()) + float.Parse(rightToLeftStack.Pop())).ToString();
               rightToLeftStack.Push(sum);
               i++;
+
+              if (i == count - 1)
+              {
+                output.Clear();
+                output = new List<string>(rightToLeftStack);
+                count = output.Count;
+                rightToLeftStack.Clear();
+                continue;
+              }
             }
             else if (val == "-" && IsNumber(nextVal) && IsNumber(prevVal))
             {
               string sum = (float.Parse(leftToRightStack.Pop()) - float.Parse(rightToLeftStack.Pop())).ToString();
               rightToLeftStack.Push(sum);
               i++;
+
+              if (i == count - 1)
+              {
+                output.Clear();
+                output = new List<string>(rightToLeftStack);
+                count = output.Count;
+                rightToLeftStack.Clear();
+                continue;
+              }
             }
             else
               rightToLeftStack.Push(val);
@@ -124,10 +161,10 @@ namespace CalculatorApp
         }
 
         // Remove Excess Brackets
-        List<string> check = new List<string>(rightToLeftStack);
+        leftToRightStack = new Stack<string>(output);
+        output.Clear();
+        List<string> check = new List<string>(leftToRightStack);
         count = check.Count;
-        dummy.Clear();
-        bool removedBrackey = false;
 
         for (int i = 0; i < check.Count; i++)
         {
@@ -135,18 +172,18 @@ namespace CalculatorApp
           {
             if (check[i - 1] == "(" && IsNumber(check[i]) && check[i + 1] == ")")
             {
-              dummy.RemoveAt(dummy.Count - 1);
-              dummy.Add(check[i]);
+              output.RemoveAt(output.Count - 1);
+              output.Add(check[i]);
               i++;
               continue;
             }
           }
 
-          dummy.Add(check[i]);          
+          output.Add(check[i]);          
         }
 
-        if (dummy.Count == 1)
-          response = dummy[0];
+        if (output.Count == 1)
+          response = output[0];
       }
       
 
@@ -209,7 +246,7 @@ namespace CalculatorApp
           currVal += num.ToString();
           canInput = true;
         }
-        else if (!canParse && canInput)
+        else if (!canParse)
         {
           convertedInput.Add(currVal);
           convertedInput.Add(inputs[i]);
@@ -267,6 +304,12 @@ namespace CalculatorApp
     {
       ClearOutput();
       inputs.Clear();
+    }
+
+    private void zeroBtn_Click(object sender, EventArgs e)
+    {
+      inputs.Add("0");
+      UpdateOutputDisplay();
     }
 
     private void oneBtn_Click(object sender, EventArgs e)

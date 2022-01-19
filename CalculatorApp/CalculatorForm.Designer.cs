@@ -258,6 +258,7 @@ namespace CalculatorApp
       this.zeroBtn.TabIndex = 18;
       this.zeroBtn.Text = "0";
       this.zeroBtn.UseVisualStyleBackColor = true;
+      this.zeroBtn.Click += new System.EventHandler(this.zeroBtn_Click);
       // 
       // negativeToggleBtn
       // 
