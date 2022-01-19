@@ -34,11 +34,13 @@ namespace CalculatorApp
       // Solve all brackets first
       // Solve all multiplication/division
 
+      inputs.Reverse();
       
       Stack<string> leftToRightStack = new Stack<string>(inputs);
       Stack<string> rightToLeftStack = new Stack<string>();
       List<string> output = new List<string>(inputs);
       int count = leftToRightStack.Count;
+      bool goNext = false;
 
       while (response == null)
       {
@@ -64,11 +66,45 @@ namespace CalculatorApp
             }
             if (rightToLeftStack.Count > 0)
               prevVal = rightToLeftStack.Peek();
-            nextVal = leftToRightStack.Peek();
+            if (leftToRightStack.Count > 0)
+              nextVal = leftToRightStack.Peek();
 
-            if (val == "*" && IsNumber(nextVal) && IsNumber(prevVal))
+            if (val == "*" && IsNumber(nextVal) && prevVal == ")")
             {
-              string sum = (float.Parse(leftToRightStack.Pop()) * float.Parse(rightToLeftStack.Pop())).ToString();
+              goNext = true;
+              rightToLeftStack.Push(val);
+            }
+            else if (val == "*" && IsNumber(nextVal) && IsNumber(prevVal))
+            {
+              if (goNext)
+              {
+                goNext = false;
+                continue;
+              }
+
+              string nextValPop = leftToRightStack.Pop();   // pop out number besides the operator * or /
+
+              if (i + 3 < count)
+              {
+                string checkForOperator = leftToRightStack.Peek();  // check if there is an operator next
+                if (checkForOperator == "*" || checkForOperator == "/" || checkForOperator == "+" || checkForOperator == "-")
+                {
+                  string storeOperator = leftToRightStack.Pop();  // pop the operator
+
+                  if (leftToRightStack.Peek() == "(")   // check if there is a bracket next
+                  {
+                    // push everything back to normal and skip the calculation part
+                    leftToRightStack.Push(storeOperator);
+                    leftToRightStack.Push(nextVal);
+                    rightToLeftStack.Push(val);
+                    continue;
+                  }
+
+                  leftToRightStack.Push(storeOperator);
+                }
+              }
+
+              string sum = (float.Parse(rightToLeftStack.Pop()) * float.Parse(nextValPop)).ToString();
               rightToLeftStack.Push(sum);
               i++;
 
@@ -81,9 +117,42 @@ namespace CalculatorApp
                 continue;
               }
             }
+            else if (val == "/" && IsNumber(nextVal) && prevVal == ")")
+            {
+              goNext = true;
+              rightToLeftStack.Push(val);
+            }
             else if (val == "/" && IsNumber(nextVal) && IsNumber(prevVal))
             {
-              string sum = (float.Parse(leftToRightStack.Pop()) / float.Parse(rightToLeftStack.Pop())).ToString();
+              if (goNext)
+              {
+                goNext = false;
+                continue;
+              }
+
+              string nextValPop = leftToRightStack.Pop();   // pop out number besides the operator * or /
+
+              if (i + 3 < count)
+              {
+                string checkForOperator = leftToRightStack.Peek();  // check if there is an operator next
+                if (checkForOperator == "*" || checkForOperator == "/" || checkForOperator == "+" || checkForOperator == "-")
+                {
+                  string storeOperator = leftToRightStack.Pop();  // pop the operator
+
+                  if (leftToRightStack.Peek() == "(")   // check if there is a bracket next
+                  {
+                    // push everything back to normal and skip the calculation part
+                    leftToRightStack.Push(storeOperator);
+                    leftToRightStack.Push(nextVal);
+                    rightToLeftStack.Push(val);
+                    continue;
+                  }
+
+                  leftToRightStack.Push(storeOperator);
+                }
+              }
+
+              string sum = (float.Parse(rightToLeftStack.Pop()) / float.Parse(nextValPop)).ToString();
               rightToLeftStack.Push(sum);
               i++;
 
@@ -103,6 +172,7 @@ namespace CalculatorApp
 
         leftToRightStack = new Stack<string>(output);
         prevVal = null;
+        goNext = false;
         // Solve all addition/subtraction
         if (leftToRightStack.Contains("+") || leftToRightStack.Contains("-"))
         {
@@ -121,11 +191,45 @@ namespace CalculatorApp
             }
             if (rightToLeftStack.Count > 0)
               prevVal = rightToLeftStack.Peek();
-            nextVal = leftToRightStack.Peek();
+            if (leftToRightStack.Count > 0)
+              nextVal = leftToRightStack.Peek();
 
-            if (val == "+" && IsNumber(nextVal) && IsNumber(prevVal))
+            if (val == "+" && IsNumber(nextVal) && prevVal == ")")
             {
-              string sum = (float.Parse(leftToRightStack.Pop()) + float.Parse(rightToLeftStack.Pop())).ToString();
+              goNext = true;
+              rightToLeftStack.Push(val);
+            }
+            else if (val == "+" && IsNumber(nextVal) && IsNumber(prevVal))
+            {
+              if (goNext)
+              {
+                goNext = false;
+                continue;
+              }
+
+              string nextValPop = leftToRightStack.Pop();   // pop out number besides the operator * or /
+
+              if (i + 3 < count)
+              {
+                string checkForOperator = leftToRightStack.Peek();  // check if there is an operator next
+                if (checkForOperator == "*" || checkForOperator == "/" || checkForOperator == "+" || checkForOperator == "-")
+                {
+                  string storeOperator = leftToRightStack.Pop();  // pop the operator
+
+                  if (leftToRightStack.Peek() == "(")   // check if there is a bracket next
+                  {
+                    // push everything back to normal and skip the calculation part
+                    leftToRightStack.Push(storeOperator);
+                    leftToRightStack.Push(nextVal);
+                    rightToLeftStack.Push(val);
+                    continue;
+                  }
+
+                  leftToRightStack.Push(storeOperator);
+                }
+              }
+
+              string sum = (float.Parse(rightToLeftStack.Pop()) + float.Parse(nextValPop)).ToString();
               rightToLeftStack.Push(sum);
               i++;
 
@@ -138,15 +242,49 @@ namespace CalculatorApp
                 continue;
               }
             }
+            else if (val == "-" && IsNumber(nextVal) && prevVal == ")")
+            {
+              goNext = true;
+              rightToLeftStack.Push(val);
+            }
             else if (val == "-" && IsNumber(nextVal) && IsNumber(prevVal))
             {
-              string sum = (float.Parse(leftToRightStack.Pop()) - float.Parse(rightToLeftStack.Pop())).ToString();
+              if (goNext)
+              {
+                goNext = false;
+                continue;
+              }
+
+              string nextValPop = leftToRightStack.Pop();   // pop out number besides the operator * or /
+
+              if (i + 3 < count)
+              {
+                string checkForOperator = leftToRightStack.Peek();  // check if there is an operator next
+                if (checkForOperator == "*" || checkForOperator == "/" || checkForOperator == "+" || checkForOperator == "-")
+                {
+                  string storeOperator = leftToRightStack.Pop();  // pop the operator
+
+                  if (leftToRightStack.Peek() == "(")   // check if there is a bracket next
+                  {
+                    // push everything back to normal and skip the calculation part
+                    leftToRightStack.Push(storeOperator);
+                    leftToRightStack.Push(nextVal);
+                    rightToLeftStack.Push(val);
+                    continue;
+                  }
+
+                  leftToRightStack.Push(storeOperator);
+                }
+              }
+
+              string sum = (float.Parse(rightToLeftStack.Pop()) - float.Parse(nextValPop)).ToString();
               rightToLeftStack.Push(sum);
               i++;
 
               if (i == count - 1)
               {
                 output.Clear();
+                rightToLeftStack.Reverse();
                 output = new List<string>(rightToLeftStack);
                 count = output.Count;
                 rightToLeftStack.Clear();
@@ -165,6 +303,7 @@ namespace CalculatorApp
         output.Clear();
         List<string> check = new List<string>(leftToRightStack);
         count = check.Count;
+        goNext = false;
 
         for (int i = 0; i < check.Count; i++)
         {
@@ -181,6 +320,7 @@ namespace CalculatorApp
 
           output.Add(check[i]);          
         }
+        output.Reverse();
 
         if (output.Count == 1)
           response = output[0];
