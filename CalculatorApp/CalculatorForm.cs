@@ -21,13 +21,19 @@ namespace CalculatorApp
       Stack<string> givenStack = new Stack<string>(input);
       List<string> tempList = new List<string>();
       List<string> outputList = new List<string>();
+      List<string> answerList = new List<string>();
       bool startTempStore = false;
       float tempSum = 0;
+      int mainCount = givenStack.Count;
       int count = givenStack.Count;
+      bool noBrackets = false;
 
       while (givenStack.Count != 1)
       {
-        for (int i = 0; i < count; i++)
+        if (NumberOfParanthesisPairs(new List<string>(givenStack)) <= 0)
+          noBrackets = true;
+
+        for (int i = 0; i < mainCount; i++)
         {
           string currVal = givenStack.Pop();
 
@@ -39,6 +45,7 @@ namespace CalculatorApp
               for (int j = 0; j < tempList.Count; j++)
               {
                 outputList.Add(tempList[j]);
+                answerList.Add(tempList[j]);
               }
               tempList.Clear();
             }
@@ -57,17 +64,6 @@ namespace CalculatorApp
             count = tempListStack.Count;
             string prevVal = null;
             string nextVal = null;
-
-
-
-
-
-
-
-
-
-
-
 
             for (int j = 0; j < count; j++)
             {
@@ -110,6 +106,7 @@ namespace CalculatorApp
               outputStack.Push(currVal);
             }
 
+            outputStack.Reverse();
             outputStack.Clear();
 
             for (int j = 0; j < count; j++)
@@ -156,17 +153,122 @@ namespace CalculatorApp
             tempList.Clear();
             currVal = outputStack.Pop();
           }
+          else if (noBrackets)
+          {
+            givenStack.Push(currVal);
+            List<string> list = new List<string>(givenStack);
+            list.Reverse();
+            Stack<string> tempListStack = new Stack<string>(list);
+            Stack<string> outputStack = new Stack<string>();
+            count = tempListStack.Count;
+
+            for (int j = 0; j < count; j++)
+            {
+              currVal = tempListStack.Pop();
+
+              if (currVal == "*")
+              {
+                string prevVal = outputStack.Pop();
+                string nextVal = tempListStack.Pop();
+
+                tempSum = int.Parse(prevVal) * int.Parse(nextVal);
+                outputStack.Push(tempSum.ToString());
+                j++;
+                continue;
+              }
+              else if (currVal == "/")
+              {
+                string prevVal = outputStack.Pop();
+                string nextVal = tempListStack.Pop();
+
+                tempSum = int.Parse(prevVal) / int.Parse(nextVal);
+                outputStack.Push(tempSum.ToString());
+                j++;
+                continue;
+              }
+
+              outputStack.Push(currVal);
+            }
+            givenStack = new Stack<string>(outputStack);
+            list = new List<string>(givenStack);
+            list.Reverse();
+            tempListStack = new Stack<string>(list);
+            count = tempListStack.Count;
+            outputStack.Clear();
+
+            for (int j = 0; j < count; j++)
+            {
+              currVal = tempListStack.Pop();
+
+              if (currVal == "+")
+              {
+                string prevVal = outputStack.Pop();
+                string nextVal = tempListStack.Pop();
+
+                tempSum = int.Parse(prevVal) + int.Parse(nextVal);
+                outputStack.Push(tempSum.ToString());
+                j++;
+                continue;
+              }
+              else if (currVal == "-")
+              {
+                string prevVal = outputStack.Pop();
+                string nextVal = tempListStack.Pop();
+
+                tempSum = int.Parse(prevVal) - int.Parse(nextVal);
+                outputStack.Push(tempSum.ToString());
+                j++;
+                continue;
+              }
+
+              outputStack.Push(currVal);
+            }
+
+            return outputStack.Pop();
+          }
+          
 
           if (startTempStore)
             continue;
 
           outputList.Add(currVal);
-          count = givenStack.Count;
+          answerList.Add(currVal);
         }
+        outputList.Reverse();
+        givenStack = new Stack<string>(outputList);
+        mainCount = givenStack.Count;
+        answerList.Clear();
+        outputList.Clear();
       }
-      return "Hello";
+      return givenStack.Pop();
     }
-    
+
+    /// <summary>
+    /// Returns the number of paranthesis pairs as an int value within the given string values. 
+    /// Returns Format Error if there is not a closing tag for each opening tag.
+    /// </summary>
+    /// <param name="inputs"></param>
+    /// <returns></returns>
+    private int NumberOfParanthesisPairs(List<string> inputs)
+    {
+      // Check if there are even amounts of "(" and ")" 
+      if (inputs.Contains("(") && inputs.Contains(")"))
+      {
+        int openParaCount = inputs.FindAll(p => p == "(").Count;
+        int closeParaCont = inputs.FindAll(p => p == ")").Count;
+
+        if (openParaCount == closeParaCont)
+        {
+          Console.WriteLine("Paranthesis Pairs Count: " + openParaCount);
+          return openParaCount;
+        }
+        else
+          throw new FormatException("Each opening paranthesis should be closed with the closing paranthesis!");
+      }
+      else
+        return 0;
+    }
+
     private bool ErrorChecks(out string error)
     {
       error = null;
