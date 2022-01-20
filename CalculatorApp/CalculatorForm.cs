@@ -17,64 +17,76 @@ namespace CalculatorApp
 
     private string Calculate(List<string> input)
     {
-      input = SplitInput(outputTextBox.Text);
-
+      if (ErrorChecks(out string error))
+        return error;
+      
       input.Reverse();
       Stack<string> givenStack = new Stack<string>(input);
+
       List<string> tempList = new List<string>();
       List<string> outputList = new List<string>();
-      List<string> answerList = new List<string>();
+
       bool startTempStore = false;
       float tempSum = 0;
+
       int mainCount = givenStack.Count;
       int count = givenStack.Count;
+      
       bool noBrackets = false;
-      string ans = null;
 
       while (givenStack.Count != 1)
       {
-        if (NumberOfParanthesisPairs(new List<string>(givenStack)) <= 0)
+        // Check if input has any brackets
+        if (NumberOfParenthesesPairs(new List<string>(givenStack)) <= 0)
           noBrackets = true;
 
         for (int i = 0; i < mainCount; i++)
         {
           string currVal = givenStack.Pop();
 
+          // Initiates storing of values within parentheses
           if (currVal == "(")
           {
             startTempStore = true;
+
+            // Adds all the values within the parentheses (including the parentheses)
+            // into outputList to be calculated
             if (tempList.Count > 0)
             {
               for (int j = 0; j < tempList.Count; j++)
               {
                 outputList.Add(tempList[j]);
-                answerList.Add(tempList[j]);
               }
               tempList.Clear();
             }
           }
 
+          // Stores all values within the parentheses (including the parentheses)
           if (startTempStore)
             tempList.Add(currVal);
 
+          string prevVal = null;
+          string nextVal = null;
+
+          // Begins calculation of values within the parentheses
           if (currVal == ")" && startTempStore)
           {
             startTempStore = false;
 
+            // Stores values in a stack and creates an empty stack
             tempList.Reverse();
             Stack<string> tempListStack = new Stack<string>(tempList);
             Stack<string> outputStack = new Stack<string>();
             count = tempListStack.Count;
-            string prevVal = null;
-            string nextVal = null;
 
+            // does multiplication/division first
             for (int j = 0; j < count; j++)
             {
               currVal = tempListStack.Pop();
 
               if (currVal == "(")
                 continue;
-
+              // always will hit this code block!!!!
               if (currVal == ")")
               {
                 tempListStack.Clear();
@@ -109,9 +121,7 @@ namespace CalculatorApp
               outputStack.Push(currVal);
             }
 
-            outputStack.Reverse();
-            outputStack.Clear();
-
+            // does addition/subtraction second
             for (int j = 0; j < count; j++)
             {
               currVal = tempListStack.Pop();
@@ -119,6 +129,7 @@ namespace CalculatorApp
               if (currVal == "(")
                 continue;
 
+              // always will hit this code block!!!
               if (currVal == ")")
               {
                 tempListStack.Clear();
@@ -153,6 +164,7 @@ namespace CalculatorApp
               outputStack.Push(currVal);
             }
 
+            // finished calculating the temp list (within bracket calculations)
             tempList.Clear();
             currVal = outputStack.Pop();
           }
@@ -171,8 +183,8 @@ namespace CalculatorApp
 
               if (currVal == "*")
               {
-                string prevVal = outputStack.Pop();
-                string nextVal = tempListStack.Pop();
+                prevVal = outputStack.Pop();
+                nextVal = tempListStack.Pop();
 
                 tempSum = int.Parse(prevVal) * int.Parse(nextVal);
                 outputStack.Push(tempSum.ToString());
@@ -181,8 +193,8 @@ namespace CalculatorApp
               }
               else if (currVal == "/")
               {
-                string prevVal = outputStack.Pop();
-                string nextVal = tempListStack.Pop();
+                prevVal = outputStack.Pop();
+                nextVal = tempListStack.Pop();
 
                 tempSum = int.Parse(prevVal) / int.Parse(nextVal);
                 outputStack.Push(tempSum.ToString());
@@ -205,8 +217,8 @@ namespace CalculatorApp
 
               if (currVal == "+")
               {
-                string prevVal = outputStack.Pop();
-                string nextVal = tempListStack.Pop();
+                prevVal = outputStack.Pop();
+                nextVal = tempListStack.Pop();
 
                 tempSum = int.Parse(prevVal) + int.Parse(nextVal);
                 outputStack.Push(tempSum.ToString());
@@ -215,8 +227,8 @@ namespace CalculatorApp
               }
               else if (currVal == "-")
               {
-                string prevVal = outputStack.Pop();
-                string nextVal = tempListStack.Pop();
+                prevVal = outputStack.Pop();
+                nextVal = tempListStack.Pop();
 
                 tempSum = int.Parse(prevVal) - int.Parse(nextVal);
                 outputStack.Push(tempSum.ToString());
@@ -230,17 +242,14 @@ namespace CalculatorApp
             return outputStack.Pop();
           }
           
-
           if (startTempStore)
             continue;
 
           outputList.Add(currVal);
-          answerList.Add(currVal);
         }
         outputList.Reverse();
         givenStack = new Stack<string>(outputList);
         mainCount = givenStack.Count;
-        answerList.Clear();
         outputList.Clear();
       }
 
@@ -253,7 +262,7 @@ namespace CalculatorApp
     /// </summary>
     /// <param name="inputs"></param>
     /// <returns></returns>
-    private int NumberOfParanthesisPairs(List<string> inputs)
+    private int NumberOfParenthesesPairs(List<string> inputs)
     {
       // Check if there are even amounts of "(" and ")" 
       if (inputs.Contains("(") && inputs.Contains(")"))
@@ -306,22 +315,25 @@ namespace CalculatorApp
         return null;
 
       List<string> result = new List<string>();
-      string fragment = "";
+      string fragment = null;
 
       for (int i = 0; i < input.Length; i++)
       {
         if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == '*' || input[i] == '(' || input[i] == ')' || input[i] == '^')
         {
-          result.Add(fragment);
+          if (fragment != null && fragment != "")
+            result.Add(fragment);
+          fragment = null;
+          
           result.Add(input[i].ToString());
-          fragment = "";
           continue;
         }
 
         fragment += input[i];
       }
 
-      result.Add(fragment);
+      if (fragment != null && fragment != "")
+        result.Add(fragment);
       return result;
     }
 
@@ -366,50 +378,42 @@ namespace CalculatorApp
       convertedInput.Add(currVal);
     }
 
-    private string Addition(float valOne, float valTwo)
+    private float Addition(string prevVal, string nextVal)
     {
-      return (valOne + valTwo).ToString();
+      return float.Parse(prevVal) * float.Parse(nextVal);
     }
 
-    private string Addition(string valOne, string valTwo)
+    private float Subtraction(string prevVal, string nextVal)
     {
-      return valOne + valTwo;
+      return float.Parse(prevVal) * float.Parse(nextVal);
     }
 
-    private void Substraction()
+    private float Division(string prevVal, string nextVal)
     {
-
+      return float.Parse(prevVal) * float.Parse(nextVal);
     }
 
-    private void Division()
+    private float Multiplication(string prevVal, string nextVal)
     {
-
+      return float.Parse(prevVal) * float.Parse(nextVal);
     }
-
-    private void Multiplication()
-    {
-
-    }
-
-    //private void UpdateOutputDisplay()
-    //{
-    //  ClearOutput();
-
-    //  for (int i = 0; i < inputs.Count; i++)
-    //  {
-    //    outputTextBox.Text += inputs[i];
-    //  }
-    //}
 
     private void ClearOutput()
     {
       outputTextBox.Text = "";
+      inputs.Clear();
     }
 
-    private void ClearEverything()
+    private void equalBtn_Click(object sender, EventArgs e)
     {
+      string inputText = outputTextBox.Text;
+      if (inputText.Length <= 0) return;
+
+      string result = Calculate(SplitInput(inputText));
+      
       ClearOutput();
-      inputs.Clear();
+      inputs.Add(result);
+      outputTextBox.Text = result;
     }
 
     private void zeroBtn_Click(object sender, EventArgs e)
@@ -538,14 +542,6 @@ namespace CalculatorApp
       inputs.Add("ln");
     }
 
-    private void equalBtn_Click(object sender, EventArgs e)
-    {
-      string result = Calculate(inputs);
-      ClearEverything();
-      inputs.Add(result);
-      outputTextBox.Text = result;
-    }
-
     private void shiftBtn_Click(object sender, EventArgs e)
     {
 
@@ -571,7 +567,7 @@ namespace CalculatorApp
 
     private void clearBtn_Click(object sender, EventArgs e)
     {
-      ClearEverything();
+      ClearOutput();
     }
 
     private void backspaceBtn_Click(object sender, EventArgs e)
