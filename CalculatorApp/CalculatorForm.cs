@@ -17,6 +17,8 @@ namespace CalculatorApp
 
     private string Calculate(List<string> input)
     {
+      input = SplitInput(outputTextBox.Text);
+
       input.Reverse();
       Stack<string> givenStack = new Stack<string>(input);
       List<string> tempList = new List<string>();
@@ -27,6 +29,7 @@ namespace CalculatorApp
       int mainCount = givenStack.Count;
       int count = givenStack.Count;
       bool noBrackets = false;
+      string ans = null;
 
       while (givenStack.Count != 1)
       {
@@ -240,6 +243,7 @@ namespace CalculatorApp
         answerList.Clear();
         outputList.Clear();
       }
+
       return givenStack.Pop();
     }
 
@@ -289,6 +293,36 @@ namespace CalculatorApp
 
 
       return false;
+    }
+
+    /// <summary>
+    /// Returns the inputted values as fragments which can then be calculated.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private List<string> SplitInput(string input)
+    {
+      if (input.Length <= 0)
+        return null;
+
+      List<string> result = new List<string>();
+      string fragment = "";
+
+      for (int i = 0; i < input.Length; i++)
+      {
+        if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == '*' || input[i] == '(' || input[i] == ')' || input[i] == '^')
+        {
+          result.Add(fragment);
+          result.Add(input[i].ToString());
+          fragment = "";
+          continue;
+        }
+
+        fragment += input[i];
+      }
+
+      result.Add(fragment);
+      return result;
     }
 
     /// <summary>
@@ -357,15 +391,15 @@ namespace CalculatorApp
 
     }
 
-    private void UpdateOutputDisplay()
-    {
-      ClearOutput();
+    //private void UpdateOutputDisplay()
+    //{
+    //  ClearOutput();
 
-      for (int i = 0; i < inputs.Count; i++)
-      {
-        outputTextBox.Text += inputs[i];
-      }
-    }
+    //  for (int i = 0; i < inputs.Count; i++)
+    //  {
+    //    outputTextBox.Text += inputs[i];
+    //  }
+    //}
 
     private void ClearOutput()
     {
@@ -380,134 +414,135 @@ namespace CalculatorApp
 
     private void zeroBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "0";
       inputs.Add("0");
-      UpdateOutputDisplay();
     }
 
     private void oneBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "1";
       inputs.Add("1");
-      UpdateOutputDisplay();
     }
 
     private void twoBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "2";
       inputs.Add("2");
-      UpdateOutputDisplay();
     }
 
     private void threeBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "3";
       inputs.Add("3");
-      UpdateOutputDisplay();
     }
 
     private void fourBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "4";
       inputs.Add("4");
-      UpdateOutputDisplay();
     }
 
     private void fiveBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "5";
       inputs.Add("5");
-      UpdateOutputDisplay();
     }
 
     private void sixBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "6";
       inputs.Add("6");
-      UpdateOutputDisplay();
     }
 
     private void sevenBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "7";
       inputs.Add("7");
-      UpdateOutputDisplay();
     }
 
     private void eightBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "8";
       inputs.Add("8");
-      UpdateOutputDisplay();
     }
 
     private void nineBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "9";
       inputs.Add("9");
-      UpdateOutputDisplay();
     }
 
     private void leftBracketBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "(";
       inputs.Add("(");
-      UpdateOutputDisplay();
     }
 
     private void rightBracketBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += ")";
       inputs.Add(")");
-      UpdateOutputDisplay();
     }
 
     private void divisionBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "/";
       inputs.Add("/");
-      UpdateOutputDisplay();
     }
 
     private void multiplicationBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "*";
       inputs.Add("*");
-      UpdateOutputDisplay();
     }
 
     private void subtractionBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "-";
       inputs.Add("-");
-      UpdateOutputDisplay();
     }
 
     private void additionBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "+";
       inputs.Add("+");
-      UpdateOutputDisplay();
     }
 
     private void squareBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "^2";
       inputs.Add("^2");
-      UpdateOutputDisplay();
     }
 
     private void squareRootBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "sqrt(";
       inputs.Add("sqrt(");
-      UpdateOutputDisplay();
     }
 
     private void exponentBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "^";
       inputs.Add("^");
-      UpdateOutputDisplay();
     }
 
     private void logBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "log";
       inputs.Add("log");
-      UpdateOutputDisplay();
     }
 
     private void lnBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "ln";
       inputs.Add("ln");
-      UpdateOutputDisplay();
     }
 
     private void equalBtn_Click(object sender, EventArgs e)
     {
       string result = Calculate(inputs);
       ClearEverything();
+      inputs.Add(result);
       outputTextBox.Text = result;
     }
 
@@ -518,20 +553,20 @@ namespace CalculatorApp
 
     private void factorialBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "!";
       inputs.Add("!");
-      UpdateOutputDisplay();
     }
 
     private void piBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "pi";
       inputs.Add("pi");
-      UpdateOutputDisplay();
     }
 
     private void eBtn_Click(object sender, EventArgs e)
     {
+      outputTextBox.Text += "e";
       inputs.Add("e");
-      UpdateOutputDisplay();
     }
 
     private void clearBtn_Click(object sender, EventArgs e)
@@ -543,10 +578,13 @@ namespace CalculatorApp
     {
       if (inputs.Count <= 0) return;
 
-      int lastIndex = inputs.Count - 1;
+      inputs.RemoveAt(inputs.Count - 1);
+      outputTextBox.Text = "";
 
-      inputs.RemoveAt(lastIndex);
-      UpdateOutputDisplay();
+      for (int i = 0; i < inputs.Count; i++)
+      {
+        outputTextBox.Text += inputs[i];
+      }
     }
   }
 }
