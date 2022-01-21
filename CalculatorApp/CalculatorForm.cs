@@ -491,6 +491,11 @@ namespace CalculatorApp
     {
       ClearOutput();
     }
+    private void periodBtn_Click(object sender, EventArgs e)
+    {
+      outputTextBox.Text += ".";
+      inputs.Add(".");
+    }
 
     private void backspaceBtn_Click(object sender, EventArgs e)
     {
@@ -505,5 +510,6 @@ namespace CalculatorApp
       }
     }
     #endregion
+
   }
 }

@@ -249,6 +249,7 @@ namespace CalculatorApp
       this.periodBtn.TabIndex = 19;
       this.periodBtn.Text = ".";
       this.periodBtn.UseVisualStyleBackColor = true;
+      this.periodBtn.Click += new System.EventHandler(this.periodBtn_Click);
       // 
       // zeroBtn
       // 
