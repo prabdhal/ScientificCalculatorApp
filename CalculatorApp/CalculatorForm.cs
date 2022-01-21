@@ -74,11 +74,14 @@ namespace CalculatorApp
             // Stores values in a stack and creates an empty stack
             List<string> list = new List<string>(tempList);
 
-            // First do multiplication and division
-            Stack<string> firstOutput = ApplyMultiplicationOrDivision(list);
+            // First, do exponent calculation
+            Stack<string> firstOutput = ApplyExponentCalculations(list);
 
-            // Secondly do addition and subtraction
-            Stack<string> finalOutput = ApplyAdditionOrSubtraction(firstOutput.ToList());
+            // Secondly, do multiplication and division
+            Stack<string> secondOutput = ApplyMultiplicationOrDivision(firstOutput.ToList());
+
+            // Finally, do addition and subtraction
+            Stack<string> finalOutput = ApplyAdditionOrSubtraction(secondOutput.ToList());
 
             // finished calculating the temp list (within bracket calculations)
             tempList.Clear();
@@ -92,11 +95,14 @@ namespace CalculatorApp
 
             List<string> list = new List<string>(givenStack);
 
-            // First do multiplication and division
-            Stack<string> firstOutput = ApplyMultiplicationOrDivision(list);
+            // First, do exponent calculation
+            Stack<string> firstOutput = ApplyExponentCalculations(list);
 
-            // Secondly do addition and subtraction
-            Stack<string> finalOutput = ApplyAdditionOrSubtraction(firstOutput.ToList());
+            // Secondly, do multiplication and division
+            Stack<string> secondOutput = ApplyMultiplicationOrDivision(firstOutput.ToList());
+
+            // Finally, do addition and subtraction
+            Stack<string> finalOutput = ApplyAdditionOrSubtraction(secondOutput.ToList());
 
             // Return the final result
             return finalOutput.Pop();
@@ -166,6 +172,54 @@ namespace CalculatorApp
     }
 
     /// <summary>
+    /// Returns the stack of string values remaining after performing exponent calculations.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private Stack<string> ApplyExponentCalculations(List<string> input)
+    {
+      // Stores values in a stack and creates an empty stack
+      input.Reverse();
+      Stack<string> inputStack = new Stack<string>(input);
+      Stack<string> outputStack = new Stack<string>();
+      int count = inputStack.Count;
+      string currVal;
+      string nextVal;
+      string prevVal;
+      double sum;
+
+      for (int j = 0; j < count; j++)
+      {
+        currVal = inputStack.Pop();
+
+        // always will hit this code block!!!!
+        if (currVal == "(" || currVal == ")")
+        {
+          if (currVal == "(")
+            continue;
+
+          return outputStack;
+        }
+
+        if (currVal == "^")
+        {
+          prevVal = outputStack.Pop();
+          nextVal = inputStack.Pop();
+
+          sum = Math.Pow(double.Parse(prevVal), double.Parse(nextVal));
+
+          outputStack.Push(sum.ToString());
+          j++;
+          continue;
+        }
+
+        outputStack.Push(currVal);
+      }
+
+      return outputStack;
+    }
+
+    /// <summary>
     /// Returns the stack of string values remaining after performing multiplication/division.
     /// </summary>
     /// <param name="input"></param>
@@ -180,7 +234,7 @@ namespace CalculatorApp
       string currVal;
       string nextVal;
       string prevVal;
-      float sum;
+      double sum;
 
       for (int j = 0; j < count; j++)
       {
@@ -201,9 +255,9 @@ namespace CalculatorApp
           nextVal = inputStack.Pop();
 
           if (currVal == "*")
-            sum = float.Parse(prevVal) * float.Parse(nextVal);
+            sum = double.Parse(prevVal) * double.Parse(nextVal);
           else
-            sum = float.Parse(prevVal) / float.Parse(nextVal);
+            sum = double.Parse(prevVal) / double.Parse(nextVal);
 
           outputStack.Push(sum.ToString());
           j++;
@@ -229,7 +283,7 @@ namespace CalculatorApp
       string currVal;
       string nextVal;
       string prevVal;
-      float sum;
+      double sum;
 
       for (int j = 0; j < count; j++)
       {
@@ -256,9 +310,9 @@ namespace CalculatorApp
           nextVal = inputStack.Pop();
 
           if (currVal == "+")
-            sum = float.Parse(prevVal) + float.Parse(nextVal);
+            sum = double.Parse(prevVal) + double.Parse(nextVal);
           else
-            sum = float.Parse(prevVal) - float.Parse(nextVal);
+            sum = double.Parse(prevVal) - double.Parse(nextVal);
 
           outputStack.Push(sum.ToString());
           j++;
