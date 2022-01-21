@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace CalculatorApp
@@ -8,30 +8,31 @@ namespace CalculatorApp
   public partial class calculatorForm : Form
   {
     private List<string> inputs = new List<string>();
-    private List<string> convertedInput = new List<string>();
 
     public calculatorForm()
     {
       InitializeComponent();
     }
 
+    /// <summary>
+    /// Performs a complete calculation on the inputted values.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
     private string Calculate(List<string> input)
     {
       if (ErrorChecks(out string error))
         return error;
-      
+
       input.Reverse();
       Stack<string> givenStack = new Stack<string>(input);
-
-      List<string> tempList = new List<string>();
+      
       List<string> outputList = new List<string>();
+      List<string> tempList = new List<string>();
+      
+      int mainCount = givenStack.Count;
 
       bool startTempStore = false;
-      float tempSum = 0;
-
-      int mainCount = givenStack.Count;
-      int count = givenStack.Count;
-      
       bool noBrackets = false;
 
       while (givenStack.Count != 1)
@@ -65,188 +66,48 @@ namespace CalculatorApp
           if (startTempStore)
             tempList.Add(currVal);
 
-          string prevVal = null;
-          string nextVal = null;
-
           // Begins calculation of values within the parentheses
           if (currVal == ")" && startTempStore)
           {
             startTempStore = false;
 
             // Stores values in a stack and creates an empty stack
-            tempList.Reverse();
-            Stack<string> tempListStack = new Stack<string>(tempList);
-            Stack<string> outputStack = new Stack<string>();
-            count = tempListStack.Count;
+            List<string> list = new List<string>(tempList);
 
-            // does multiplication/division first
-            for (int j = 0; j < count; j++)
-            {
-              currVal = tempListStack.Pop();
+            // First do multiplication and division
+            Stack<string> firstOutput = ApplyMultiplicationOrDivision(list);
 
-              if (currVal == "(")
-                continue;
-              // always will hit this code block!!!!
-              if (currVal == ")")
-              {
-                tempListStack.Clear();
-                tempListStack = new Stack<string>(outputStack);
-                tempListStack.Reverse();
-                outputStack.Clear();
-                count = tempListStack.Count;
-                continue;
-              }
-
-              if (currVal == "*")
-              {
-                prevVal = outputStack.Pop();
-                nextVal = tempListStack.Pop();
-
-                tempSum = int.Parse(prevVal) * int.Parse(nextVal);
-                outputStack.Push(tempSum.ToString());
-                j++;
-                continue;
-              }
-              else if (currVal == "/")
-              {
-                prevVal = outputStack.Pop();
-                nextVal = tempListStack.Pop();
-
-                tempSum = int.Parse(prevVal) / int.Parse(nextVal);
-                outputStack.Push(tempSum.ToString());
-                j++;
-                continue;
-              }
-
-              outputStack.Push(currVal);
-            }
-
-            // does addition/subtraction second
-            for (int j = 0; j < count; j++)
-            {
-              currVal = tempListStack.Pop();
-
-              if (currVal == "(")
-                continue;
-
-              // always will hit this code block!!!
-              if (currVal == ")")
-              {
-                tempListStack.Clear();
-                tempListStack = new Stack<string>(outputStack);
-                tempListStack.Reverse();
-                outputStack.Clear();
-                count = tempListStack.Count;
-                continue;
-              }
-
-              if (currVal == "+")
-              {
-                prevVal = outputStack.Pop();
-                nextVal = tempListStack.Pop();
-
-                tempSum = int.Parse(prevVal) + int.Parse(nextVal);
-                outputStack.Push(tempSum.ToString());
-                j++;
-                continue;
-              }
-              else if (currVal == "-")
-              {
-                prevVal = outputStack.Pop();
-                nextVal = tempListStack.Pop();
-
-                tempSum = int.Parse(prevVal) - int.Parse(nextVal);
-                outputStack.Push(tempSum.ToString());
-                j++;
-                continue;
-              }
-
-              outputStack.Push(currVal);
-            }
+            // Secondly do addition and subtraction
+            Stack<string> finalOutput = ApplyAdditionOrSubtraction(firstOutput.ToList());
 
             // finished calculating the temp list (within bracket calculations)
             tempList.Clear();
-            currVal = outputStack.Pop();
+            
+            // Return the final result
+            currVal = finalOutput.Pop();
           }
           else if (noBrackets)
           {
             givenStack.Push(currVal);
+
             List<string> list = new List<string>(givenStack);
-            list.Reverse();
-            Stack<string> tempListStack = new Stack<string>(list);
-            Stack<string> outputStack = new Stack<string>();
-            count = tempListStack.Count;
 
-            for (int j = 0; j < count; j++)
-            {
-              currVal = tempListStack.Pop();
+            // First do multiplication and division
+            Stack<string> firstOutput = ApplyMultiplicationOrDivision(list);
 
-              if (currVal == "*")
-              {
-                prevVal = outputStack.Pop();
-                nextVal = tempListStack.Pop();
+            // Secondly do addition and subtraction
+            Stack<string> finalOutput = ApplyAdditionOrSubtraction(firstOutput.ToList());
 
-                tempSum = int.Parse(prevVal) * int.Parse(nextVal);
-                outputStack.Push(tempSum.ToString());
-                j++;
-                continue;
-              }
-              else if (currVal == "/")
-              {
-                prevVal = outputStack.Pop();
-                nextVal = tempListStack.Pop();
-
-                tempSum = int.Parse(prevVal) / int.Parse(nextVal);
-                outputStack.Push(tempSum.ToString());
-                j++;
-                continue;
-              }
-
-              outputStack.Push(currVal);
-            }
-            givenStack = new Stack<string>(outputStack);
-            list = new List<string>(givenStack);
-            list.Reverse();
-            tempListStack = new Stack<string>(list);
-            count = tempListStack.Count;
-            outputStack.Clear();
-
-            for (int j = 0; j < count; j++)
-            {
-              currVal = tempListStack.Pop();
-
-              if (currVal == "+")
-              {
-                prevVal = outputStack.Pop();
-                nextVal = tempListStack.Pop();
-
-                tempSum = int.Parse(prevVal) + int.Parse(nextVal);
-                outputStack.Push(tempSum.ToString());
-                j++;
-                continue;
-              }
-              else if (currVal == "-")
-              {
-                prevVal = outputStack.Pop();
-                nextVal = tempListStack.Pop();
-
-                tempSum = int.Parse(prevVal) - int.Parse(nextVal);
-                outputStack.Push(tempSum.ToString());
-                j++;
-                continue;
-              }
-
-              outputStack.Push(currVal);
-            }
-
-            return outputStack.Pop();
+            // Return the final result
+            return finalOutput.Pop();
           }
-          
+
           if (startTempStore)
             continue;
 
           outputList.Add(currVal);
         }
+
         outputList.Reverse();
         givenStack = new Stack<string>(outputList);
         mainCount = givenStack.Count;
@@ -282,15 +143,15 @@ namespace CalculatorApp
         return 0;
     }
 
+    /// <summary>
+    /// Outputs any errors due to invalid entries.
+    /// </summary>
+    /// <param name="error"></param>
+    /// <returns></returns>
     private bool ErrorChecks(out string error)
     {
       error = null;
       if (inputs.Count <= 0) return true;
-      if (IsNumber(inputs[0]) == false)
-      {
-        error = "Format Error - first input cannot be a non-number";
-        return true;
-      }
       if (inputs.Contains("(") || inputs.Contains(")"))
       {
         if (inputs.FindAll(x => x == "(").Count != inputs.FindAll(x => x == ")").Count)
@@ -302,6 +163,112 @@ namespace CalculatorApp
 
 
       return false;
+    }
+
+    /// <summary>
+    /// Returns the stack of string values remaining after performing multiplication/division.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private Stack<string> ApplyMultiplicationOrDivision(List<string> input)
+    {
+      // Stores values in a stack and creates an empty stack
+      input.Reverse();
+      Stack<string> inputStack = new Stack<string>(input);
+      Stack<string> outputStack = new Stack<string>();
+      int count = inputStack.Count;
+      string currVal;
+      string nextVal;
+      string prevVal;
+      float sum;
+
+      for (int j = 0; j < count; j++)
+      {
+        currVal = inputStack.Pop();
+
+        // always will hit this code block!!!!
+        if (currVal == "(" || currVal == ")")
+        {
+          if (currVal == "(")
+            continue;
+
+          return outputStack;
+        }
+
+        if (currVal == "*" || currVal == "/")
+        {
+          prevVal = outputStack.Pop();
+          nextVal = inputStack.Pop();
+
+          if (currVal == "*")
+            sum = float.Parse(prevVal) * float.Parse(nextVal);
+          else
+            sum = float.Parse(prevVal) / float.Parse(nextVal);
+
+          outputStack.Push(sum.ToString());
+          j++;
+          continue;
+        }
+
+        outputStack.Push(currVal);
+      }
+
+      return outputStack;
+    }
+
+    /// <summary>
+    /// Returns the stack of string values remaining after performing addition/subtraction.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private Stack<string> ApplyAdditionOrSubtraction(List<string> input)
+    {
+      Stack<string> inputStack = new Stack<string>(input);
+      Stack<string> outputStack = new Stack<string>();
+      int count = inputStack.Count;
+      string currVal;
+      string nextVal;
+      string prevVal;
+      float sum;
+
+      for (int j = 0; j < count; j++)
+      {
+        currVal = inputStack.Pop();
+
+        // always will hit this code block!!!!
+        if (currVal == "(" || currVal == ")")
+        {
+          if (currVal == "(")
+            continue;
+
+          return outputStack;
+        }
+
+        if (currVal == "+" || currVal == "-")
+        {
+          if (outputStack.Count <= 0 || inputStack.Count <= 0)
+          {
+            outputStack.Push(currVal);
+            continue;
+          }
+
+          prevVal = outputStack.Pop();
+          nextVal = inputStack.Pop();
+
+          if (currVal == "+")
+            sum = float.Parse(prevVal) + float.Parse(nextVal);
+          else
+            sum = float.Parse(prevVal) - float.Parse(nextVal);
+
+          outputStack.Push(sum.ToString());
+          j++;
+          continue;
+        }
+
+        outputStack.Push(currVal);
+      }
+
+      return outputStack;
     }
 
     /// <summary>
@@ -324,7 +291,7 @@ namespace CalculatorApp
           if (fragment != null && fragment != "")
             result.Add(fragment);
           fragment = null;
-          
+
           result.Add(input[i].ToString());
           continue;
         }
@@ -338,6 +305,16 @@ namespace CalculatorApp
     }
 
     /// <summary>
+    /// Clears the inputs list and the values displayed on the calculator.
+    /// </summary>
+    private void ClearOutput()
+    {
+      outputTextBox.Text = "";
+      inputs.Clear();
+    }
+
+    #region Helper Methods
+    /// <summary>
     /// Returns true if the given string value is a number.
     /// </summary>
     /// <param name="input"></param>
@@ -346,71 +323,16 @@ namespace CalculatorApp
     {
       return float.TryParse(input, out float r);
     }
+    #endregion
 
-    /// <summary>
-    /// Merges consecutive single string numbers into one string number value.
-    /// </summary>
-    private void ConvertInput()
-    {
-      string currVal = "";
-      bool canInput = false;
-
-      for (int i = 0; i < inputs.Count; i++)
-      {
-        bool canParse = int.TryParse(inputs[i], out int num);
-
-        if (canParse)
-        {
-          currVal += num.ToString();
-          canInput = true;
-        }
-        else if (!canParse)
-        {
-          convertedInput.Add(currVal);
-          convertedInput.Add(inputs[i]);
-          currVal = "";
-          canInput = false;
-        }
-        else
-          Console.Error.WriteLine("Error input... can't have more than one symbol next to eachother.");
-      }
-
-      convertedInput.Add(currVal);
-    }
-
-    private float Addition(string prevVal, string nextVal)
-    {
-      return float.Parse(prevVal) * float.Parse(nextVal);
-    }
-
-    private float Subtraction(string prevVal, string nextVal)
-    {
-      return float.Parse(prevVal) * float.Parse(nextVal);
-    }
-
-    private float Division(string prevVal, string nextVal)
-    {
-      return float.Parse(prevVal) * float.Parse(nextVal);
-    }
-
-    private float Multiplication(string prevVal, string nextVal)
-    {
-      return float.Parse(prevVal) * float.Parse(nextVal);
-    }
-
-    private void ClearOutput()
-    {
-      outputTextBox.Text = "";
-      inputs.Clear();
-    }
-
+    #region OnClick Events
     private void equalBtn_Click(object sender, EventArgs e)
     {
       string inputText = outputTextBox.Text;
       if (inputText.Length <= 0) return;
 
       string result = Calculate(SplitInput(inputText));
-      
+
       ClearOutput();
       inputs.Add(result);
       outputTextBox.Text = result;
@@ -582,5 +504,6 @@ namespace CalculatorApp
         outputTextBox.Text += inputs[i];
       }
     }
+    #endregion
   }
 }
