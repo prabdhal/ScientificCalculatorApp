@@ -69,19 +69,18 @@ namespace CalculatorApp
           // Begins calculation of values within the parentheses
           if (currVal == ")" && startTempStore)
           {
-            startTempStore = false;
-
             // Stores values in a stack and creates an empty stack
+            startTempStore = false;
             List<string> list = new List<string>(tempList);
-
+            
             // First, do exponent calculation
             Stack<string> firstOutput = ApplyExponentOrSquareRoot(list);
-
-            // Secondly, do multiplication and division
-            Stack<string> secondOutput = ApplyMultiplicationOrDivision(firstOutput.ToList());
-
+            // Secondly, do logarithms and ln 
+            Stack<string> secondOutput = ApplyLogAndLn(firstOutput.ToList());
+            // Thirdly, do multiplication and division
+            Stack<string> thirdOutput = ApplyMultiplicationOrDivision(secondOutput.ToList());
             // Finally, do addition and subtraction
-            Stack<string> finalOutput = ApplyAdditionOrSubtraction(secondOutput.ToList());
+            Stack<string> finalOutput = ApplyAdditionOrSubtraction(thirdOutput.ToList());
 
             // finished calculating the temp list (within bracket calculations)
             tempList.Clear();
@@ -92,17 +91,16 @@ namespace CalculatorApp
           else if (noBrackets)
           {
             givenStack.Push(currVal);
-
             List<string> list = new List<string>(givenStack);
 
             // First, do exponent calculation
             Stack<string> firstOutput = ApplyExponentOrSquareRoot(list);
-
-            // Secondly, do multiplication and division
-            Stack<string> secondOutput = ApplyMultiplicationOrDivision(firstOutput.ToList());
-
+            // Secondly, do logarithms and ln 
+            Stack<string> secondOutput = ApplyLogAndLn(firstOutput.ToList());
+            // Thirdly, do multiplication and division
+            Stack<string> thirdOutput = ApplyMultiplicationOrDivision(secondOutput.ToList());
             // Finally, do addition and subtraction
-            Stack<string> finalOutput = ApplyAdditionOrSubtraction(secondOutput.ToList());
+            Stack<string> finalOutput = ApplyAdditionOrSubtraction(thirdOutput.ToList());
 
             // Return the final result
             return finalOutput.Pop();
@@ -160,7 +158,9 @@ namespace CalculatorApp
       if (inputs.Count <= 0) return true;
       if (inputs.Contains("(") || inputs.Contains(")"))
       {
-        if (inputs.FindAll(x => x == "(").Count + inputs.FindAll(x => x == "sqrt(").Count != inputs.FindAll(x => x == ")").Count)
+        if (inputs.FindAll(x => x == "(").Count + inputs.FindAll(x => x == "sqrt(").Count + 
+          inputs.FindAll(x => x == "log(").Count + inputs.FindAll(x => x == "ln(").Count
+          != inputs.FindAll(x => x == ")").Count)
         {
           error = "Format Error - missing bracket";
           return true;
@@ -276,6 +276,54 @@ namespace CalculatorApp
     }
 
     /// <summary>
+    /// Returns the stack of string values remaining after performing log and ln.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private Stack<string> ApplyLogAndLn(List<string> input)
+    {
+      // Stores values in a stack and creates an empty stack
+      Stack<string> inputStack = new Stack<string>(input);
+      Stack<string> outputStack = new Stack<string>();
+      int count = inputStack.Count;
+      string currVal;
+      string nextVal;
+      double sum;
+
+      for (int j = 0; j < count; j++)
+      {
+        currVal = inputStack.Pop();
+
+        // always will hit this code block!!!!
+        if (currVal == "(" || currVal == ")")
+        {
+          if (currVal == "(")
+            continue;
+
+          return outputStack;
+        }
+        
+        if (currVal == "log" || currVal == "ln")
+        {
+          nextVal = inputStack.Pop();
+
+          if (currVal == "log")
+            sum = Math.Log10(double.Parse(nextVal));
+          else
+            sum = Math.Log(double.Parse(nextVal));
+
+          outputStack.Push(sum.ToString());
+          j++;
+          continue;
+        }
+
+        outputStack.Push(currVal);
+      }
+
+      return outputStack;
+    }
+
+    /// <summary>
     /// Returns the stack of string values remaining after performing exponent calculations.
     /// </summary>
     /// <param name="input"></param>
@@ -340,8 +388,6 @@ namespace CalculatorApp
     /// <returns></returns>
     private List<string> SplitInput(string input)
     {
-      bool sqrt = false;
-
       if (input.Length <= 0)
         return null;
 
@@ -355,9 +401,9 @@ namespace CalculatorApp
           if (fragment != null && fragment != "")
           {
             if (fragment == "pi")
-            {
               fragment = "3.14159265359";
-            }
+            else if (fragment == "e")
+              fragment = "2.71828182846";
 
             result.Add(fragment);
           }
@@ -371,7 +417,14 @@ namespace CalculatorApp
       }
 
       if (fragment != null && fragment != "")
+      {
+        if (fragment == "pi")
+          fragment = "3.14159265359";
+        else if (fragment == "e")
+          fragment = "2.71828182846";
+
         result.Add(fragment);
+      }
       return result;
     }
 
@@ -525,14 +578,14 @@ namespace CalculatorApp
 
     private void logBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "log";
-      inputs.Add("log");
+      outputTextBox.Text += "log(";
+      inputs.Add("log(");
     }
 
     private void lnBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "ln";
-      inputs.Add("ln");
+      outputTextBox.Text += "ln(";
+      inputs.Add("ln(");
     }
 
     private void shiftBtn_Click(object sender, EventArgs e)
@@ -562,6 +615,7 @@ namespace CalculatorApp
     {
       ClearOutput();
     }
+
     private void periodBtn_Click(object sender, EventArgs e)
     {
       outputTextBox.Text += ".";
@@ -581,6 +635,5 @@ namespace CalculatorApp
       }
     }
     #endregion
-
   }
 }
