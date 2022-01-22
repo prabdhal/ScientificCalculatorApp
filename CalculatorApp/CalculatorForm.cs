@@ -75,7 +75,7 @@ namespace CalculatorApp
             List<string> list = new List<string>(tempList);
 
             // First, do exponent calculation
-            Stack<string> firstOutput = ApplyExponentCalculations(list);
+            Stack<string> firstOutput = ApplyExponentOrSquareRoot(list);
 
             // Secondly, do multiplication and division
             Stack<string> secondOutput = ApplyMultiplicationOrDivision(firstOutput.ToList());
@@ -96,7 +96,7 @@ namespace CalculatorApp
             List<string> list = new List<string>(givenStack);
 
             // First, do exponent calculation
-            Stack<string> firstOutput = ApplyExponentCalculations(list);
+            Stack<string> firstOutput = ApplyExponentOrSquareRoot(list);
 
             // Secondly, do multiplication and division
             Stack<string> secondOutput = ApplyMultiplicationOrDivision(firstOutput.ToList());
@@ -160,114 +160,14 @@ namespace CalculatorApp
       if (inputs.Count <= 0) return true;
       if (inputs.Contains("(") || inputs.Contains(")"))
       {
-        if (inputs.FindAll(x => x == "(").Count != inputs.FindAll(x => x == ")").Count)
+        if (inputs.FindAll(x => x == "(").Count + inputs.FindAll(x => x == "sqrt(").Count != inputs.FindAll(x => x == ")").Count)
         {
           error = "Format Error - missing bracket";
           return true;
         }
       }
 
-
       return false;
-    }
-
-    /// <summary>
-    /// Returns the stack of string values remaining after performing exponent calculations.
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    private Stack<string> ApplyExponentCalculations(List<string> input)
-    {
-      // Stores values in a stack and creates an empty stack
-      input.Reverse();
-      Stack<string> inputStack = new Stack<string>(input);
-      Stack<string> outputStack = new Stack<string>();
-      int count = inputStack.Count;
-      string currVal;
-      string nextVal;
-      string prevVal;
-      double sum;
-
-      for (int j = 0; j < count; j++)
-      {
-        currVal = inputStack.Pop();
-
-        // always will hit this code block!!!!
-        if (currVal == "(" || currVal == ")")
-        {
-          if (currVal == "(")
-            continue;
-
-          return outputStack;
-        }
-
-        if (currVal == "^")
-        {
-          prevVal = outputStack.Pop();
-          nextVal = inputStack.Pop();
-
-          sum = Math.Pow(double.Parse(prevVal), double.Parse(nextVal));
-
-          outputStack.Push(sum.ToString());
-          j++;
-          continue;
-        }
-
-        outputStack.Push(currVal);
-      }
-
-      return outputStack;
-    }
-
-    /// <summary>
-    /// Returns the stack of string values remaining after performing multiplication/division.
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    private Stack<string> ApplyMultiplicationOrDivision(List<string> input)
-    {
-      // Stores values in a stack and creates an empty stack
-      input.Reverse();
-      Stack<string> inputStack = new Stack<string>(input);
-      Stack<string> outputStack = new Stack<string>();
-      int count = inputStack.Count;
-      string currVal;
-      string nextVal;
-      string prevVal;
-      double sum;
-
-      for (int j = 0; j < count; j++)
-      {
-        currVal = inputStack.Pop();
-
-        // always will hit this code block!!!!
-        if (currVal == "(" || currVal == ")")
-        {
-          if (currVal == "(")
-            continue;
-
-          return outputStack;
-        }
-
-        if (currVal == "*" || currVal == "/")
-        {
-          prevVal = outputStack.Pop();
-          nextVal = inputStack.Pop();
-
-          if (currVal == "*")
-            sum = double.Parse(prevVal) * double.Parse(nextVal);
-          else
-            sum = double.Parse(prevVal) / double.Parse(nextVal);
-
-          outputStack.Push(sum.ToString());
-          j++;
-          continue;
-        }
-
-        outputStack.Push(currVal);
-      }
-
-      return outputStack;
     }
 
     /// <summary>
@@ -326,12 +226,122 @@ namespace CalculatorApp
     }
 
     /// <summary>
+    /// Returns the stack of string values remaining after performing multiplication/division.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private Stack<string> ApplyMultiplicationOrDivision(List<string> input)
+    {
+      // Stores values in a stack and creates an empty stack
+      Stack<string> inputStack = new Stack<string>(input);
+      Stack<string> outputStack = new Stack<string>();
+      int count = inputStack.Count;
+      string currVal;
+      string nextVal;
+      string prevVal;
+      double sum;
+
+      for (int j = 0; j < count; j++)
+      {
+        currVal = inputStack.Pop();
+
+        // always will hit this code block!!!!
+        if (currVal == "(" || currVal == ")")
+        {
+          if (currVal == "(")
+            continue;
+
+          return outputStack;
+        }
+
+        if (currVal == "*" || currVal == "/")
+        {
+          prevVal = outputStack.Pop();
+          nextVal = inputStack.Pop();
+
+          if (currVal == "*")
+            sum = double.Parse(prevVal) * double.Parse(nextVal);
+          else
+            sum = double.Parse(prevVal) / double.Parse(nextVal);
+
+          outputStack.Push(sum.ToString());
+          j++;
+          continue;
+        }
+
+        outputStack.Push(currVal);
+      }
+
+      return outputStack;
+    }
+
+    /// <summary>
+    /// Returns the stack of string values remaining after performing exponent calculations.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private Stack<string> ApplyExponentOrSquareRoot(List<string> input)
+    {
+      // Stores values in a stack and creates an empty stack
+      input.Reverse();
+      Stack<string> inputStack = new Stack<string>(input);
+      Stack<string> outputStack = new Stack<string>();
+      int count = inputStack.Count;
+      string currVal;
+      string nextVal;
+      string prevVal;
+      double sum;
+
+      for (int j = 0; j < count; j++)
+      {
+        currVal = inputStack.Pop();
+
+        // always will hit this code block!!!!
+        if (currVal == "(" || currVal == ")")
+        {
+          if (currVal == "(")
+            continue;
+
+          return outputStack;
+        }
+
+        if (currVal == "^")
+        {
+          prevVal = outputStack.Pop();
+          nextVal = inputStack.Pop();
+          
+          sum = Math.Pow(double.Parse(prevVal), double.Parse(nextVal));
+
+          outputStack.Push(sum.ToString());
+          j++;
+          continue;
+        }
+        else if (currVal == "sqrt")
+        {
+          nextVal = inputStack.Pop();
+
+          sum = Math.Sqrt(double.Parse(nextVal));
+
+          outputStack.Push(sum.ToString());
+          j++;
+          continue;
+        }
+
+        outputStack.Push(currVal);
+      }
+
+      return outputStack;
+    }
+
+    /// <summary>
     /// Returns the inputted values as fragments which can then be calculated.
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
     private List<string> SplitInput(string input)
     {
+      bool sqrt = false;
+
       if (input.Length <= 0)
         return null;
 
@@ -343,7 +353,14 @@ namespace CalculatorApp
         if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == '*' || input[i] == '(' || input[i] == ')' || input[i] == '^')
         {
           if (fragment != null && fragment != "")
+          {
+            if (fragment == "pi")
+            {
+              fragment = "3.14159265359";
+            }
+
             result.Add(fragment);
+          }
           fragment = null;
 
           result.Add(input[i].ToString());
