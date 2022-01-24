@@ -21,7 +21,7 @@ namespace CalculatorApp
     /// <returns></returns>
     private string Calculate(List<string> input)
     {
-      if (ErrorChecks(out string error))
+      if (PrimaryErrorChecks(out string error))
         return error;
 
       input.Reverse();
@@ -152,7 +152,7 @@ namespace CalculatorApp
     /// </summary>
     /// <param name="error"></param>
     /// <returns></returns>
-    private bool ErrorChecks(out string error)
+    private bool PrimaryErrorChecks(out string error)
     {
       error = null;
       if (inputs.Count <= 0) return true;
@@ -167,6 +167,17 @@ namespace CalculatorApp
         }
       }
 
+      return false;
+    }
+
+    private bool SecondaryErrorChecks(List<string> input, out string error)
+    {
+      error = null;
+      if (input[0].Equals("+") || input[0].Equals("*") || input[0].Equals("/") || input[0].Equals("^"))
+      {
+        error = "Format Error - cannot start calculation with operators";
+        return true;
+      }
       return false;
     }
 
@@ -400,32 +411,77 @@ namespace CalculatorApp
         {
           if (fragment != null && fragment != "")
           {
-            if (fragment == "pi")
-              fragment = "3.14159265359";
-            else if (fragment == "e")
-              fragment = "2.71828182846";
-
             result.Add(fragment);
+            fragment = null;
           }
-          fragment = null;
 
           result.Add(input[i].ToString());
           continue;
         }
 
+        if (IsNumber(input[i].ToString()) && i + 1 < input.Length)
+        {
+          if (IsNumber(input[i + 1].ToString()) == false && input[i + 1].ToString() != ".")
+          {
+            fragment += input[i];
+            result.Add(fragment);
+            fragment = null;
+            continue;
+          }
+        }
+        
         fragment += input[i];
+
+        // Case: when single input of pi or e
+        if (fragment == "pi" || fragment == "e")
+        {
+          result.Add(fragment);
+          fragment = null;
+        }
       }
+
 
       if (fragment != null && fragment != "")
-      {
-        if (fragment == "pi")
-          fragment = "3.14159265359";
-        else if (fragment == "e")
-          fragment = "2.71828182846";
-
         result.Add(fragment);
-      }
+
       return result;
+    }
+
+    private void ReformatInput(List<string> inputList)
+    {
+      int count = inputList.Count;
+
+      for (int i = 0; i < inputList.Count; i++)
+      {
+        // adds * before
+        if (inputList[i] == "pi" && i - 1 >= 0 
+          || inputList[i] == "sqrt" && i - 1 >= 0 
+          || inputList[i] == "e" && i - 1 >= 0 
+          || inputList[i] == "(" && i - 1 >= 0)
+        {
+          if (!IsOperator(inputList[i - 1]) && inputList[i - 1] != "sqrt" && inputList[i - 1] != "ln")
+            inputList.Insert(i, "*");
+        }
+        // adds * after
+        if (inputList[i] == "pi" && i + 1 < count 
+          || inputList[i] == "e" && i + 1 < count 
+          || inputList[i] == ")" && i + 1 < count)
+        {
+          if (!IsOperator(inputList[i + 1]))
+            inputList.Insert(i + 1, "*");
+        }
+      }
+    }
+
+    private void ConvertConstantToNumbers(List<string> inputList)
+    {
+      for (int i = 0; i < inputList.Count; i++)
+      {
+        if (inputList[i] == "pi")
+          inputList[i] = "3.141592653589793238";
+        else if (inputList[i] == "e")
+          inputList[i] = "2.718281828459045235";
+      }
     }
 
     /// <summary>
@@ -435,6 +491,13 @@ namespace CalculatorApp
     {
       outputTextBox.Text = "";
       inputs.Clear();
+    }
+
+    private bool IsOperator(string val)
+    {
+      if (val == "+" || val == "-" || val == "/" || val == "*" || val == "(" || val == ")" || val == "^")
+        return true;
+      return false;
     }
 
     #region Helper Methods
@@ -455,7 +518,17 @@ namespace CalculatorApp
       string inputText = outputTextBox.Text;
       if (inputText.Length <= 0) return;
 
-      string result = Calculate(SplitInput(inputText));
+      List<string> input = SplitInput(inputText);
+
+      ReformatInput(input);
+      ConvertConstantToNumbers(input);
+      if (SecondaryErrorChecks(input, out inputText))
+      {
+        outputTextBox.Text = inputText;
+        return;
+      }
+      
+      string result = Calculate(input);
 
       ClearOutput();
       inputs.Add(result);
