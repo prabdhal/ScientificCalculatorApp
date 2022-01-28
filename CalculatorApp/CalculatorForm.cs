@@ -79,8 +79,10 @@ namespace CalculatorApp
             Stack<string> firstOutput = ApplyExponentOrSquareRoot(list);
             // Secondly, do logarithms and ln 
             Stack<string> secondOutput = ApplyLogAndLn(firstOutput.ToList());
-            // Thirdly, do multiplication and division
-            Stack<string> thirdOutput = ApplyMultiplicationOrDivision(secondOutput.ToList());
+            // Thirdly, do cosine, sine and tangent
+            Stack<string> thirdOutput = ApplyCosSinTan(secondOutput.ToList());
+            // Fourthly, do multiplication and division
+            Stack<string> fourthOutput = ApplyMultiplicationOrDivision(thirdOutput.ToList());
             // Finally, do addition and subtraction
             Stack<string> finalOutput = ApplyAdditionOrSubtraction(thirdOutput.ToList());
 
@@ -99,10 +101,12 @@ namespace CalculatorApp
             Stack<string> firstOutput = ApplyExponentOrSquareRoot(list);
             // Secondly, do logarithms and ln 
             Stack<string> secondOutput = ApplyLogAndLn(firstOutput.ToList());
-            // Thirdly, do multiplication and division
-            Stack<string> thirdOutput = ApplyMultiplicationOrDivision(secondOutput.ToList());
+            // Thirdly, do cosine, sine and tangent
+            Stack<string> thirdOutput = ApplyCosSinTan(secondOutput.ToList());
+            // Fourthly, do multiplication and division
+            Stack<string> fourthOutput = ApplyMultiplicationOrDivision(thirdOutput.ToList());
             // Finally, do addition and subtraction
-            Stack<string> finalOutput = ApplyAdditionOrSubtraction(thirdOutput.ToList());
+            Stack<string> finalOutput = ApplyAdditionOrSubtraction(fourthOutput.ToList());
 
             // Return the final result
             return finalOutput.Pop();
@@ -289,6 +293,59 @@ namespace CalculatorApp
     }
 
     /// <summary>
+    /// Returns the stack of string values remaining after performing cos, sin and tan calculations.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private Stack<string> ApplyCosSinTan(List<string> input)
+    {
+      // Stores values in a stack and creates an empty stack
+      Stack<string> inputStack = new Stack<string>(input);
+      Stack<string> outputStack = new Stack<string>();
+      int count = inputStack.Count;
+      string currVal;
+      string nextVal;
+      double sum;
+
+      for (int j = 0; j < count; j++)
+      {
+        currVal = inputStack.Pop();
+
+        // always will hit this code block!!!!
+        if (currVal == "(" || currVal == ")")
+        {
+          if (currVal == "(")
+            continue;
+
+          return outputStack;
+        }
+
+        if (currVal == "sin" || currVal == "cos" || currVal == "tan")
+        {
+          nextVal = inputStack.Pop();
+
+          if (nextVal.EndsWith('!'))
+            nextVal = ApplyFactorialCalculation(nextVal).ToString();
+
+          if (currVal == "sin")
+            sum = MathF.Sin(float.Parse(nextVal));
+          else if (currVal == "cos")
+            sum = MathF.Cos(float.Parse(nextVal));
+          else
+            sum = MathF.Tan(float.Parse(nextVal));
+
+          outputStack.Push(sum.ToString());
+          j++;
+          continue;
+        }
+
+        outputStack.Push(currVal);
+      }
+
+      return outputStack;
+    }
+
+    /// <summary>
     /// Returns the stack of string values remaining after performing exponent calculations.
     /// </summary>
     /// <param name="input"></param>
@@ -351,6 +408,11 @@ namespace CalculatorApp
       return outputStack;
     }
 
+    /// <summary>
+    /// Returns the value after performing factorial calculations.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
     private double ApplyFactorialCalculation(string input)
     {
       string trim = input.Trim('!');
@@ -387,7 +449,9 @@ namespace CalculatorApp
     {
       error = null;
       int leftBracCount = inputs.FindAll(x => x == "(").Count + inputs.FindAll(x => x == "sqrt(").Count +
-          inputs.FindAll(x => x == "log(").Count + inputs.FindAll(x => x == "ln(").Count;
+          inputs.FindAll(x => x == "log(").Count + inputs.FindAll(x => x == "ln(").Count +
+          inputs.FindAll(x => x == "cos(").Count + inputs.FindAll(x => x == "sin(").Count +
+          inputs.FindAll(x => x == "tan(").Count;
       int rightBracCount = inputs.FindAll(x => x == ")").Count;
 
       if (inputs.Count <= 0) return true;
@@ -488,7 +552,6 @@ namespace CalculatorApp
         }
       }
 
-
       if (fragment != null && fragment != "")
         result.Add(fragment);
 
@@ -509,7 +572,8 @@ namespace CalculatorApp
           || inputList[i] == "e" && i - 1 >= 0
           || inputList[i] == "(" && i - 1 >= 0)
         {
-          if (!IsOperator(inputList[i - 1]) && inputList[i - 1] != "sqrt" && inputList[i - 1] != "ln" && inputList[i - 1] != "log")
+          if (!IsOperator(inputList[i - 1]) && inputList[i - 1] != "sqrt" && inputList[i - 1] != "ln" && inputList[i - 1] != "log" 
+            && inputList[i - 1] != "cos" && inputList[i - 1] != "sin" && inputList[i - 1] != "tan")
             inputList.Insert(i, "*");
         }
         // adds * after
