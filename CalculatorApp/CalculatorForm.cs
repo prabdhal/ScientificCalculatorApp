@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace CalculatorApp
@@ -8,6 +9,7 @@ namespace CalculatorApp
   public partial class calculatorForm : Form
   {
     private List<string> inputs = new List<string>();
+    private List<string> ansHistory = new List<string>();
 
     public calculatorForm()
     {
@@ -21,7 +23,7 @@ namespace CalculatorApp
     /// <returns></returns>
     private string Calculate(List<string> input)
     {
-      if (PrimaryErrorChecks(out string error))
+      if (SecondaryErrorChecks(out string error))
         return error;
 
       input.Reverse();
@@ -35,7 +37,7 @@ namespace CalculatorApp
       bool startTempStore = false;
       bool noBrackets = false;
 
-      while (givenStack.Count != 1)
+      while (givenStack.Count != 1 || givenStack.Peek().EndsWith('!') == true)
       {
         // Check if input has any brackets
         if (NumberOfParenthesesPairs(new List<string>(givenStack)) <= 0)
@@ -119,66 +121,6 @@ namespace CalculatorApp
       }
 
       return givenStack.Pop();
-    }
-
-    /// <summary>
-    /// Returns the number of paranthesis pairs as an int value within the given string values. 
-    /// Returns Format Error if there is not a closing tag for each opening tag.
-    /// </summary>
-    /// <param name="inputs"></param>
-    /// <returns></returns>
-    private int NumberOfParenthesesPairs(List<string> inputs)
-    {
-      // Check if there are even amounts of "(" and ")" 
-      if (inputs.Contains("(") && inputs.Contains(")"))
-      {
-        int openParaCount = inputs.FindAll(p => p == "(").Count;
-        int closeParaCont = inputs.FindAll(p => p == ")").Count;
-
-        if (openParaCount == closeParaCont)
-        {
-          Console.WriteLine("Paranthesis Pairs Count: " + openParaCount);
-          return openParaCount;
-        }
-        else
-          throw new FormatException("Each opening paranthesis should be closed with the closing paranthesis!");
-      }
-      else
-        return 0;
-    }
-
-    /// <summary>
-    /// Outputs any errors due to invalid entries.
-    /// </summary>
-    /// <param name="error"></param>
-    /// <returns></returns>
-    private bool PrimaryErrorChecks(out string error)
-    {
-      error = null;
-      if (inputs.Count <= 0) return true;
-      if (inputs.Contains("(") || inputs.Contains(")"))
-      {
-        if (inputs.FindAll(x => x == "(").Count + inputs.FindAll(x => x == "sqrt(").Count + 
-          inputs.FindAll(x => x == "log(").Count + inputs.FindAll(x => x == "ln(").Count
-          != inputs.FindAll(x => x == ")").Count)
-        {
-          error = "Format Error - missing bracket";
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    private bool SecondaryErrorChecks(List<string> input, out string error)
-    {
-      error = null;
-      if (input[0].Equals("+") || input[0].Equals("*") || input[0].Equals("/") || input[0].Equals("^"))
-      {
-        error = "Format Error - cannot start calculation with operators";
-        return true;
-      }
-      return false;
     }
 
     /// <summary>
@@ -270,6 +212,11 @@ namespace CalculatorApp
           prevVal = outputStack.Pop();
           nextVal = inputStack.Pop();
 
+          if (prevVal.EndsWith('!'))
+            prevVal = ApplyFactorialCalculation(prevVal).ToString();
+          if (nextVal.EndsWith('!'))
+            nextVal = ApplyFactorialCalculation(nextVal).ToString();
+
           if (currVal == "*")
             sum = double.Parse(prevVal) * double.Parse(nextVal);
           else
@@ -277,6 +224,13 @@ namespace CalculatorApp
 
           outputStack.Push(sum.ToString());
           j++;
+          continue;
+        }
+        else if (currVal.EndsWith('!'))
+        {
+          sum = ApplyFactorialCalculation(currVal);
+
+          outputStack.Push(sum.ToString());
           continue;
         }
 
@@ -313,7 +267,7 @@ namespace CalculatorApp
 
           return outputStack;
         }
-        
+
         if (currVal == "log" || currVal == "ln")
         {
           nextVal = inputStack.Pop();
@@ -368,7 +322,12 @@ namespace CalculatorApp
         {
           prevVal = outputStack.Pop();
           nextVal = inputStack.Pop();
-          
+
+          if (prevVal.EndsWith('!'))
+            prevVal = ApplyFactorialCalculation(prevVal).ToString();
+          if (nextVal.EndsWith('!'))
+            nextVal = ApplyFactorialCalculation(nextVal).ToString();
+
           sum = Math.Pow(double.Parse(prevVal), double.Parse(nextVal));
 
           outputStack.Push(sum.ToString());
@@ -392,11 +351,100 @@ namespace CalculatorApp
       return outputStack;
     }
 
+    private double ApplyFactorialCalculation(string input)
+    {
+      string trim = input.Trim('!');
+
+      double val = double.Parse(trim);
+
+      if (val <= 1) return val;
+
+      return val * ApplyFactorialCalculation((val - 1).ToString());
+    }
+
+    private bool PrimaryErrorCheck(List<string> input, out string error)
+    {
+      error = null;
+      if (input[0].Equals("+") || input[0].Equals("*") || input[0].Equals("/") || input[0].Equals("^"))
+      {
+        error = "Format Error - cannot start calculation with operators";
+        return true;
+      }
+      if (input[0].Equals("-") && input.Count <= 1)
+      {
+        error = "Format Error - need to insert values";
+        return true;
+      }
+      return false;
+    }
+
+    /// <summary>
+    /// Outputs any errors due to invalid entries.
+    /// </summary>
+    /// <param name="error"></param>
+    /// <returns></returns>
+    private bool SecondaryErrorChecks(out string error)
+    {
+      error = null;
+      int leftBracCount = inputs.FindAll(x => x == "(").Count + inputs.FindAll(x => x == "sqrt(").Count +
+          inputs.FindAll(x => x == "log(").Count + inputs.FindAll(x => x == "ln(").Count;
+      int rightBracCount = inputs.FindAll(x => x == ")").Count;
+
+      if (inputs.Count <= 0) return true;
+      if (leftBracCount + rightBracCount >= inputs.Count)
+      {
+        error = "Format Error - cannot contain only brackets";
+        return true;
+      }
+      if (inputs.Contains("(") || inputs.Contains(")"))
+      {
+        if (leftBracCount != rightBracCount)
+        {
+          error = "Format Error - missing bracket";
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    private void DisplayOutputText()
+    {
+      outputTextBox.Clear();
+      StringBuilder sb = new StringBuilder();
+
+      for (int i = 0; i < ansHistory.Count; i++)
+      {
+        sb.AppendLine(ansHistory[i]);
+      }
+
+      outputTextBox.Text = sb.ToString();
+    }
+
+    #region Helper Methods
+    /// <summary>
+    /// Returns true if the given string value is a number.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private bool IsNumber(string input)
+    {
+      return float.TryParse(input, out float r);
+    }
+
+    private bool IsOperator(string val)
+    {
+      if (val == "+" || val == "-" || val == "/" || val == "*" || val == "(" || val == ")" || val == "^")
+        return true;
+      return false;
+    }
+
     /// <summary>
     /// Returns the inputted values as fragments which can then be calculated.
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
+    /// 
     private List<string> SplitInput(string input)
     {
       if (input.Length <= 0)
@@ -421,7 +469,7 @@ namespace CalculatorApp
 
         if (IsNumber(input[i].ToString()) && i + 1 < input.Length)
         {
-          if (IsNumber(input[i + 1].ToString()) == false && input[i + 1].ToString() != ".")
+          if (IsNumber(input[i + 1].ToString()) == false && input[i + 1].ToString() != "." && input[i + 1].ToString() != "!")
           {
             fragment += input[i];
             result.Add(fragment);
@@ -429,7 +477,7 @@ namespace CalculatorApp
             continue;
           }
         }
-        
+
         fragment += input[i];
 
         // Case: when single input of pi or e
@@ -447,32 +495,47 @@ namespace CalculatorApp
       return result;
     }
 
+    /// <summary>
+    /// Adds multiplication symbol in between variable/numbers with missing operators. Ex. pipi => pi*pi
+    /// </summary>
+    /// <param name="inputList"></param>
     private void ReformatInput(List<string> inputList)
     {
-      int count = inputList.Count;
-
       for (int i = 0; i < inputList.Count; i++)
       {
         // adds * before
-        if (inputList[i] == "pi" && i - 1 >= 0 
-          || inputList[i] == "sqrt" && i - 1 >= 0 
-          || inputList[i] == "e" && i - 1 >= 0 
+        if (inputList[i] == "pi" && i - 1 >= 0
+          || inputList[i] == "sqrt" && i - 1 >= 0
+          || inputList[i] == "e" && i - 1 >= 0
           || inputList[i] == "(" && i - 1 >= 0)
         {
-          if (!IsOperator(inputList[i - 1]) && inputList[i - 1] != "sqrt" && inputList[i - 1] != "ln")
+          if (!IsOperator(inputList[i - 1]) && inputList[i - 1] != "sqrt" && inputList[i - 1] != "ln" && inputList[i - 1] != "log")
             inputList.Insert(i, "*");
         }
         // adds * after
-        if (inputList[i] == "pi" && i + 1 < count 
-          || inputList[i] == "e" && i + 1 < count 
-          || inputList[i] == ")" && i + 1 < count)
+        if (inputList[i] == "pi" && i + 1 < inputList.Count
+          || inputList[i] == "e" && i + 1 < inputList.Count
+          || inputList[i] == ")" && i + 1 < inputList.Count)
         {
           if (!IsOperator(inputList[i + 1]))
             inputList.Insert(i + 1, "*");
         }
+        if (inputList[0] == "-" && i + 1 < inputList.Count)
+        {
+          if (IsNumber(inputList[1]))
+          {
+            inputList[0] = "-" + inputList[1];
+            inputList.RemoveAt(1);
+          }
+
+        }
       }
     }
 
+    /// <summary>
+    /// Converts all constant values into their number values to prepare for calculation.
+    /// </summary>
+    /// <param name="inputList"></param>
     private void ConvertConstantToNumbers(List<string> inputList)
     {
       for (int i = 0; i < inputList.Count; i++)
@@ -485,46 +548,55 @@ namespace CalculatorApp
     }
 
     /// <summary>
+    /// Returns the number of paranthesis pairs as an int value within the given string values. 
+    /// Returns Format Error if there is not a closing tag for each opening tag.
+    /// </summary>
+    /// <param name="inputs"></param>
+    /// <returns></returns>
+    private int NumberOfParenthesesPairs(List<string> inputs)
+    {
+      // Check if there are even amounts of "(" and ")" 
+      if (inputs.Contains("(") && inputs.Contains(")"))
+      {
+        int openParaCount = inputs.FindAll(p => p == "(").Count;
+        int closeParaCont = inputs.FindAll(p => p == ")").Count;
+
+        if (openParaCount == closeParaCont)
+        {
+          Console.WriteLine("Paranthesis Pairs Count: " + openParaCount);
+          return openParaCount;
+        }
+        else
+          throw new FormatException("Each opening paranthesis should be closed with the closing paranthesis!");
+      }
+      else
+        return 0;
+    }
+
+    /// <summary>
     /// Clears the inputs list and the values displayed on the calculator.
     /// </summary>
     private void ClearOutput()
     {
-      outputTextBox.Text = "";
+      inputTextBox.Text = "";
       inputs.Clear();
     }
 
-    private bool IsOperator(string val)
-    {
-      if (val == "+" || val == "-" || val == "/" || val == "*" || val == "(" || val == ")" || val == "^")
-        return true;
-      return false;
-    }
-
-    #region Helper Methods
-    /// <summary>
-    /// Returns true if the given string value is a number.
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    private bool IsNumber(string input)
-    {
-      return float.TryParse(input, out float r);
-    }
     #endregion
 
     #region OnClick Events
     private void equalBtn_Click(object sender, EventArgs e)
     {
-      string inputText = outputTextBox.Text;
+      string inputText = inputTextBox.Text;
       if (inputText.Length <= 0) return;
 
       List<string> input = SplitInput(inputText);
 
       ReformatInput(input);
       ConvertConstantToNumbers(input);
-      if (SecondaryErrorChecks(input, out inputText))
+      if (PrimaryErrorCheck(input, out inputText))
       {
-        outputTextBox.Text = inputText;
+        inputTextBox.Text = inputText;
         return;
       }
       
@@ -532,132 +604,133 @@ namespace CalculatorApp
 
       ClearOutput();
       inputs.Add(result);
-      outputTextBox.Text = result;
+
+      if (ansHistory.Count >= 5)
+      {
+        ansHistory.RemoveAt(0);
+      }
+      ansHistory.Add(result);
+
+      DisplayOutputText();
     }
 
     private void zeroBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "0";
+      inputTextBox.Text += "0";
       inputs.Add("0");
     }
 
     private void oneBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "1";
+      inputTextBox.Text += "1";
       inputs.Add("1");
     }
 
     private void twoBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "2";
+      inputTextBox.Text += "2";
       inputs.Add("2");
     }
 
     private void threeBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "3";
+      inputTextBox.Text += "3";
       inputs.Add("3");
     }
 
     private void fourBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "4";
+      inputTextBox.Text += "4";
       inputs.Add("4");
     }
 
     private void fiveBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "5";
+      inputTextBox.Text += "5";
       inputs.Add("5");
     }
 
     private void sixBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "6";
+      inputTextBox.Text += "6";
       inputs.Add("6");
     }
 
     private void sevenBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "7";
+      inputTextBox.Text += "7";
       inputs.Add("7");
     }
 
     private void eightBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "8";
+      inputTextBox.Text += "8";
       inputs.Add("8");
     }
 
     private void nineBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "9";
+      inputTextBox.Text += "9";
       inputs.Add("9");
     }
 
     private void leftBracketBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "(";
+      inputTextBox.Text += "(";
       inputs.Add("(");
     }
 
     private void rightBracketBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += ")";
+      inputTextBox.Text += ")";
       inputs.Add(")");
     }
 
     private void divisionBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "/";
+      inputTextBox.Text += "/";
       inputs.Add("/");
     }
 
     private void multiplicationBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "*";
+      inputTextBox.Text += "*";
       inputs.Add("*");
     }
 
     private void subtractionBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "-";
+      inputTextBox.Text += "-";
       inputs.Add("-");
     }
 
     private void additionBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "+";
+      inputTextBox.Text += "+";
       inputs.Add("+");
-    }
-
-    private void squareBtn_Click(object sender, EventArgs e)
-    {
-      outputTextBox.Text += "^2";
-      inputs.Add("^2");
     }
 
     private void squareRootBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "sqrt(";
+      inputTextBox.Text += "sqrt(";
       inputs.Add("sqrt(");
     }
 
     private void exponentBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "^";
+      inputTextBox.Text += "^";
       inputs.Add("^");
     }
 
     private void logBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "log(";
+      inputTextBox.Text += "log(";
       inputs.Add("log(");
     }
 
     private void lnBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "ln(";
+      inputTextBox.Text += "ln(";
       inputs.Add("ln(");
     }
 
@@ -668,19 +741,19 @@ namespace CalculatorApp
 
     private void factorialBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "!";
+      inputTextBox.Text += "!";
       inputs.Add("!");
     }
 
     private void piBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "pi";
+      inputTextBox.Text += "pi";
       inputs.Add("pi");
     }
 
     private void eBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += "e";
+      inputTextBox.Text += "e";
       inputs.Add("e");
     }
 
@@ -691,7 +764,7 @@ namespace CalculatorApp
 
     private void periodBtn_Click(object sender, EventArgs e)
     {
-      outputTextBox.Text += ".";
+      inputTextBox.Text += ".";
       inputs.Add(".");
     }
 
@@ -700,13 +773,65 @@ namespace CalculatorApp
       if (inputs.Count <= 0) return;
 
       inputs.RemoveAt(inputs.Count - 1);
-      outputTextBox.Text = "";
+      inputTextBox.Text = "";
 
       for (int i = 0; i < inputs.Count; i++)
       {
-        outputTextBox.Text += inputs[i];
+        inputTextBox.Text += inputs[i];
       }
     }
+
+    private void sinBtn_Click(object sender, EventArgs e)
+    {
+      inputTextBox.Text += "sin(";
+      inputs.Add("sin(");
+    }
+
+    private void cosBtn_Click(object sender, EventArgs e)
+    {
+      inputTextBox.Text += "cos(";
+      inputs.Add("cos(");
+    }
+
+    private void tanBtn_Click(object sender, EventArgs e)
+    {
+      inputTextBox.Text += "tan(";
+      inputs.Add("tan(");
+    }
+
+    private void expBtn_Click(object sender, EventArgs e)
+    {
+      inputTextBox.Text += "E";
+      inputs.Add("E");
+    }
+
+    private void ansBtn_Click(object sender, EventArgs e)
+    {
+      // retrieve last answer from history
+      inputTextBox.Text += "";
+      inputs.Add("");
+    }
+
+    private void percentBtn_Click(object sender, EventArgs e)
+    {
+      inputTextBox.Text += "%";
+      inputs.Add("%");
+    }
     #endregion
+
+    #region Design Methods
+
+
+    #endregion
+
+    private void outputTextBox_TextChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void inputTextBox_TextChanged(object sender, EventArgs e)
+    {
+
+    }
   }
 }
