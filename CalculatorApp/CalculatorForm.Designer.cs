@@ -351,6 +351,7 @@ namespace CalculatorApp
       this.radDegBtn.TabIndex = 28;
       this.radDegBtn.Text = "Rad";
       this.radDegBtn.UseVisualStyleBackColor = true;
+      this.radDegBtn.Click += new System.EventHandler(this.radDegBtn_Click);
       // 
       // squareRootBtn
       // 

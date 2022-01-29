@@ -10,6 +10,8 @@ namespace CalculatorApp
   {
     private List<string> inputs = new List<string>();
     private List<string> ansHistory = new List<string>();
+    bool isInverse = false;
+    bool isRad = true;
 
     public calculatorForm()
     {
@@ -36,6 +38,9 @@ namespace CalculatorApp
 
       bool startTempStore = false;
       bool noBrackets = false;
+
+      if (givenStack.Count == 1 && givenStack.Peek() == "ans" && ansHistory.Count > 0)
+        return ansHistory[ansHistory.Count - 1];
 
       while (givenStack.Count != 1 || givenStack.Peek().EndsWith('!') == true)
       {
@@ -365,6 +370,9 @@ namespace CalculatorApp
       for (int j = 0; j < count; j++)
       {
         currVal = inputStack.Pop();
+
+        if (currVal == "ans" && ansHistory.Count > 0)
+          currVal = ansHistory[ansHistory.Count - 1];
 
         // always will hit this code block!!!!
         if (currVal == "(" || currVal == ")")
@@ -774,33 +782,138 @@ namespace CalculatorApp
       inputs.Add("+");
     }
 
-    private void squareRootBtn_Click(object sender, EventArgs e)
+    private void radDegBtn_Click(object sender, EventArgs e)
     {
-      inputTextBox.Text += "sqrt(";
-      inputs.Add("sqrt(");
-    }
+      isRad = !isRad;
 
-    private void exponentBtn_Click(object sender, EventArgs e)
-    {
-      inputTextBox.Text += "^";
-      inputs.Add("^");
-    }
-
-    private void logBtn_Click(object sender, EventArgs e)
-    {
-      inputTextBox.Text += "log(";
-      inputs.Add("log(");
-    }
-
-    private void lnBtn_Click(object sender, EventArgs e)
-    {
-      inputTextBox.Text += "ln(";
-      inputs.Add("ln(");
+      if (isRad)
+        radDegBtn.Text = "Rad";
+      else
+        radDegBtn.Text = "Deg";
     }
 
     private void shiftBtn_Click(object sender, EventArgs e)
     {
+      isInverse = !isInverse;
 
+      if (isInverse)
+      {
+        sinBtn.Text = "arcsin";
+        cosBtn.Text = "arccos";
+        tanBtn.Text = "arctan";
+        lnBtn.Text = "e\xB2";
+        logBtn.Text = "10\xB2";
+        squareRootBtn.Text = "x\xB2";
+        exponentBtn.Text = "sqrt(x)^(1/y)";
+      }
+      else
+      {
+        sinBtn.Text = "sin";
+        cosBtn.Text = "cos";
+        tanBtn.Text = "tan";
+        lnBtn.Text = "ln";
+        logBtn.Text = "log";
+        squareRootBtn.Text = "sqrt";
+        exponentBtn.Text = "x^y";
+      }
+    }
+
+    private void squareRootBtn_Click(object sender, EventArgs e)
+    {
+      if (isInverse)
+      {
+        inputTextBox.Text += "^2";
+        inputs.Add("^2");
+      }
+      else
+      {
+        inputTextBox.Text += "sqrt(";
+        inputs.Add("sqrt(");
+      }
+    }
+
+    private void exponentBtn_Click(object sender, EventArgs e)
+    {
+      if (isInverse)
+      {
+        inputTextBox.Text += ")^(1/";
+        inputs.Add(")^(1/");
+      }
+      else
+      {
+        inputTextBox.Text += "^";
+        inputs.Add("^");
+      }
+    }
+
+    private void logBtn_Click(object sender, EventArgs e)
+    {
+      if (isInverse)
+      {
+        inputTextBox.Text += "10^";
+        inputs.Add("10^");
+      }
+      else
+      {
+        inputTextBox.Text += "log(";
+        inputs.Add("log(");
+      }
+    }
+
+    private void lnBtn_Click(object sender, EventArgs e)
+    {
+      if (isInverse)
+      {
+        inputTextBox.Text += "e^";
+        inputs.Add("e^");
+      }
+      else
+      {
+        inputTextBox.Text += "ln(";
+        inputs.Add("ln(");
+      }
+    }
+
+    private void sinBtn_Click(object sender, EventArgs e)
+    {
+      if (isInverse)
+      {
+        inputTextBox.Text += "arcsin(";
+        inputs.Add("arcsin(");
+      }
+      else
+      {
+        inputTextBox.Text += "sin(";
+        inputs.Add("sin(");
+      }
+    }
+
+    private void cosBtn_Click(object sender, EventArgs e)
+    {
+      if (isInverse)
+      {
+        inputTextBox.Text += "arccos(";
+        inputs.Add("arccos(");
+      }
+      else
+      {
+        inputTextBox.Text += "arccos(";
+        inputs.Add("arccos(");
+      }
+    }
+
+    private void tanBtn_Click(object sender, EventArgs e)
+    {
+      if (isInverse)
+      {
+        inputTextBox.Text += "arctan(";
+        inputs.Add("arctan(");
+      }
+      else
+      {
+        inputTextBox.Text += "tan(";
+        inputs.Add("tan(");
+      }
     }
 
     private void factorialBtn_Click(object sender, EventArgs e)
@@ -845,24 +958,6 @@ namespace CalculatorApp
       }
     }
 
-    private void sinBtn_Click(object sender, EventArgs e)
-    {
-      inputTextBox.Text += "sin(";
-      inputs.Add("sin(");
-    }
-
-    private void cosBtn_Click(object sender, EventArgs e)
-    {
-      inputTextBox.Text += "cos(";
-      inputs.Add("cos(");
-    }
-
-    private void tanBtn_Click(object sender, EventArgs e)
-    {
-      inputTextBox.Text += "tan(";
-      inputs.Add("tan(");
-    }
-
     private void expBtn_Click(object sender, EventArgs e)
     {
       inputTextBox.Text += "E";
@@ -872,8 +967,10 @@ namespace CalculatorApp
     private void ansBtn_Click(object sender, EventArgs e)
     {
       // retrieve last answer from history
-      inputTextBox.Text += "";
-      inputs.Add("");
+      if (ansHistory.Count <= 0) return;
+      inputTextBox.Text += "ans";
+      string ans = ansHistory[ansHistory.Count - 1];
+      inputs.Add(ans);
     }
 
     private void percentBtn_Click(object sender, EventArgs e)
@@ -897,5 +994,6 @@ namespace CalculatorApp
     {
 
     }
+
   }
 }
