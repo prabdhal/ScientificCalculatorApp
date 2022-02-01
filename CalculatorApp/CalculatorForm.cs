@@ -9,6 +9,7 @@ namespace CalculatorApp
   public partial class calculatorForm : Form
   {
     private List<string> inputs = new List<string>();
+    private string inputText;
     private List<string> splitInputs = new List<string>();
     private List<string> ansHistory = new List<string>();
     bool isInverse = false;
@@ -35,6 +36,8 @@ namespace CalculatorApp
 
       input.Reverse();
       Stack<string> givenStack = new Stack<string>(input);
+
+      PrepareCalculationHistory(input);
       
       List<string> outputList = new List<string>();
       List<string> tempList = new List<string>();
@@ -369,6 +372,8 @@ namespace CalculatorApp
     /// <returns></returns>
     private Stack<string> ApplyExponentOrSquareRoot(List<string> input)
     {
+      ApplyPercentage(input);
+
       // Stores values in a stack and creates an empty stack
       input.Reverse();
       Stack<string> inputStack = new Stack<string>(input);
@@ -426,6 +431,27 @@ namespace CalculatorApp
       }
 
       return outputStack;
+    }
+
+    /// <summary>
+    /// Returns the decimal value of the percentage value.
+    /// </summary>
+    /// <param name="input"></param>
+    private void ApplyPercentage(List<string> input)
+    {
+      if (input.Contains("%"))
+      {
+        for (int i = 0; i < input.Count; i++)
+        {
+          if (input[i] == "%" && i - 1 >= 0)
+          {
+            double val = double.Parse(input[i - 1]);
+            input[i - 1] = (val / 100d).ToString();
+            input.RemoveAt(i);
+            i--;
+          }
+        }
+      }
     }
 
     /// <summary>
@@ -610,7 +636,7 @@ namespace CalculatorApp
 
       for (int i = 0; i < input.Length; i++)
       {
-        if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == '*' || input[i] == '(' || input[i] == ')' || input[i] == '^')
+        if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == '*' || input[i] == '(' || input[i] == ')' || input[i] == '^' || input[i] == '%')
         {
           if (fragment != null && fragment != "")
           {
@@ -742,6 +768,15 @@ namespace CalculatorApp
       splitInputs.Clear();
     }
 
+    private void PrepareCalculationHistory(List<string> input)
+    {
+      inputText = null;
+      for (int i = input.Count - 1; i >= 0; i--)
+      {
+        inputText += input[i];
+      }
+    }
+
     #endregion
 
     #region OnClick Events
@@ -766,13 +801,16 @@ namespace CalculatorApp
         return;
 
       ClearOutput();
-      inputs.Add(result);
+
+      string calculation = new StringBuilder(this.inputText + " = " + result).ToString();
+
+      inputs.Add(calculation);
 
       if (ansHistory.Count >= 5)
       {
         ansHistory.RemoveAt(0);
       }
-      ansHistory.Add(result);
+      ansHistory.Add(calculation);
 
       DisplayOutputText();
     }

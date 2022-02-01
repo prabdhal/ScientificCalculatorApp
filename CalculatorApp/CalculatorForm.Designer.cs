@@ -77,6 +77,7 @@ namespace CalculatorApp
       this.outputTextBox.Location = new System.Drawing.Point(22, 12);
       this.outputTextBox.Multiline = true;
       this.outputTextBox.Name = "outputTextBox";
+      this.outputTextBox.PlaceholderText = "Answer History";
       this.outputTextBox.ReadOnly = true;
       this.outputTextBox.Size = new System.Drawing.Size(541, 81);
       this.outputTextBox.TabIndex = 0;
@@ -439,6 +440,7 @@ namespace CalculatorApp
       this.inputTextBox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
       this.inputTextBox.Location = new System.Drawing.Point(22, 99);
       this.inputTextBox.Name = "inputTextBox";
+      this.inputTextBox.PlaceholderText = "Enter Calculation";
       this.inputTextBox.Size = new System.Drawing.Size(541, 22);
       this.inputTextBox.TabIndex = 37;
       this.inputTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
