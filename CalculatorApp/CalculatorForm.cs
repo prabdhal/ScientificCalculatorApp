@@ -9,9 +9,11 @@ namespace CalculatorApp
   public partial class calculatorForm : Form
   {
     private List<string> inputs = new List<string>();
+    private List<string> splitInputs = new List<string>();
     private List<string> ansHistory = new List<string>();
     bool isInverse = false;
     bool isRad = true;
+    bool errorCode = false;
 
     public calculatorForm()
     {
@@ -26,7 +28,10 @@ namespace CalculatorApp
     private string Calculate(List<string> input)
     {
       if (SecondaryErrorChecks(out string error))
-        return error;
+      {
+        inputTextBox.Text = error;
+        return null;
+      }
 
       input.Reverse();
       Stack<string> givenStack = new Stack<string>(input);
@@ -89,7 +94,7 @@ namespace CalculatorApp
             // Fourthly, do multiplication and division
             Stack<string> fourthOutput = ApplyMultiplicationOrDivision(thirdOutput.ToList());
             // Finally, do addition and subtraction
-            Stack<string> finalOutput = ApplyAdditionOrSubtraction(thirdOutput.ToList());
+            Stack<string> finalOutput = ApplyAdditionOrSubtraction(fourthOutput.ToList());
 
             // finished calculating the temp list (within bracket calculations)
             tempList.Clear();
@@ -325,7 +330,8 @@ namespace CalculatorApp
           return outputStack;
         }
 
-        if (currVal == "sin" || currVal == "cos" || currVal == "tan")
+        if (currVal == "sin" || currVal == "cos" || currVal == "tan" ||
+          currVal == "arcsin" || currVal == "arccos" || currVal == "arctan")
         {
           nextVal = inputStack.Pop();
 
@@ -336,8 +342,14 @@ namespace CalculatorApp
             sum = MathF.Sin(float.Parse(nextVal));
           else if (currVal == "cos")
             sum = MathF.Cos(float.Parse(nextVal));
-          else
+          else if (currVal == "tan")
             sum = MathF.Tan(float.Parse(nextVal));
+          else if (currVal == "arcsin")
+            sum = MathF.Asin(float.Parse(nextVal));
+          else if (currVal == "arccos")
+            sum = MathF.Acos(float.Parse(nextVal));
+          else 
+            sum = MathF.Atan(float.Parse(nextVal));
 
           outputStack.Push(sum.ToString());
           j++;
@@ -437,11 +449,13 @@ namespace CalculatorApp
       error = null;
       if (input[0].Equals("+") || input[0].Equals("*") || input[0].Equals("/") || input[0].Equals("^"))
       {
+        errorCode = true;
         error = "Format Error - cannot start calculation with operators";
         return true;
       }
       if (input[0].Equals("-") && input.Count <= 1)
       {
+        errorCode = true;
         error = "Format Error - need to insert values";
         return true;
       }
@@ -456,25 +470,94 @@ namespace CalculatorApp
     private bool SecondaryErrorChecks(out string error)
     {
       error = null;
+
+      bool hasNumber = false;
+      bool unevenBrackets = false;
+      bool startsWithOperator = false;
+      bool noFollowingValueAfterOperator = false;
+      bool needClosingBracket = false;
+
       int leftBracCount = inputs.FindAll(x => x == "(").Count + inputs.FindAll(x => x == "sqrt(").Count +
           inputs.FindAll(x => x == "log(").Count + inputs.FindAll(x => x == "ln(").Count +
           inputs.FindAll(x => x == "cos(").Count + inputs.FindAll(x => x == "sin(").Count +
-          inputs.FindAll(x => x == "tan(").Count;
+          inputs.FindAll(x => x == "tan(").Count + inputs.FindAll(x => x == "arccos(").Count + 
+          inputs.FindAll(x => x == "arcsin(").Count + inputs.FindAll(x => x == "arctan(").Count;
       int rightBracCount = inputs.FindAll(x => x == ")").Count;
+      bool isOperator = false;
 
-      if (inputs.Count <= 0) return true;
-      if (leftBracCount + rightBracCount >= inputs.Count)
-      {
-        error = "Format Error - cannot contain only brackets";
-        return true;
-      }
-      if (inputs.Contains("(") || inputs.Contains(")"))
-      {
+
+      // ensures input is not empty
+      if (splitInputs.Count <= 0) return true;
+      if (IsOperator(splitInputs[0]))
+        startsWithOperator = true;
+      if (splitInputs.Contains("(") || splitInputs.Contains(")"))
         if (leftBracCount != rightBracCount)
+          unevenBrackets = true;
+      for (int i = 0; i < splitInputs.Count; i++)
+      {
+        if (IsNumber(splitInputs[i]) && splitInputs[i] != "pi" && splitInputs[i] != "e") 
+        { 
+          hasNumber = true;
+          isOperator = false;
+        }
+        if (IsOperator(splitInputs[i]))
         {
-          error = "Format Error - missing bracket";
+          if (isOperator)
+            noFollowingValueAfterOperator = true;
+          isOperator = true;
+        }
+        if (IsNumber(splitInputs[i]) || splitInputs[i] == "(" || splitInputs[i] == ")")
+          isOperator = false;
+        if (splitInputs[i] == "(")
+        {
+          needClosingBracket = true;
+          if (i + 1 >= splitInputs.Count)
+          {
+            errorCode = true;
+            error = "Format Error - must contain number(s) between brackets";
+            return true;
+          }
+          if (splitInputs[i+1] == ")")
+          {
+            errorCode = true;
+            error = "Format Error - must contain number(s) between brackets";
+            return true;
+          }
+        }
+        if (splitInputs[i] == ")" && needClosingBracket == false)
+        {
+          errorCode = true;
+          error = "Format Error - need an opening bracket for each closing bracket";
           return true;
         }
+        if (splitInputs[i] == ")" && needClosingBracket)
+          needClosingBracket = false;
+
+      }
+
+      if (!hasNumber)
+      {
+        errorCode = true;
+        error = "Format Error - must contain numbers";
+        return true;
+      }
+      else if (startsWithOperator)
+      {
+        errorCode = true;
+        error = "Format Error - cannot start calculation with an operator";
+        return false;
+      }
+      else if (unevenBrackets || needClosingBracket)
+      {
+        errorCode = true;
+        error = "Format Error - missing bracket(s)";
+        return true;
+      }
+      else if (noFollowingValueAfterOperator || isOperator)
+      {
+        errorCode = true;
+        error = "Format Error - need a valid value after an operator";
+        return true;
       }
 
       return false;
@@ -501,12 +584,13 @@ namespace CalculatorApp
     /// <returns></returns>
     private bool IsNumber(string input)
     {
-      return float.TryParse(input, out float r);
+      bool check =  float.TryParse(input, out float r);
+      return check;
     }
 
     private bool IsOperator(string val)
     {
-      if (val == "+" || val == "-" || val == "/" || val == "*" || val == "(" || val == ")" || val == "^")
+      if (val == "+" || val == "-" || val == "/" || val == "*" || val == "^")
         return true;
       return false;
     }
@@ -522,7 +606,6 @@ namespace CalculatorApp
       if (input.Length <= 0)
         return null;
 
-      List<string> result = new List<string>();
       string fragment = null;
 
       for (int i = 0; i < input.Length; i++)
@@ -531,11 +614,11 @@ namespace CalculatorApp
         {
           if (fragment != null && fragment != "")
           {
-            result.Add(fragment);
+            splitInputs.Add(fragment);
             fragment = null;
           }
 
-          result.Add(input[i].ToString());
+          splitInputs.Add(input[i].ToString());
           continue;
         }
 
@@ -544,7 +627,7 @@ namespace CalculatorApp
           if (IsNumber(input[i + 1].ToString()) == false && input[i + 1].ToString() != "." && input[i + 1].ToString() != "!")
           {
             fragment += input[i];
-            result.Add(fragment);
+            splitInputs.Add(fragment);
             fragment = null;
             continue;
           }
@@ -555,15 +638,16 @@ namespace CalculatorApp
         // Case: when single input of pi or e
         if (fragment == "pi" || fragment == "e")
         {
-          result.Add(fragment);
+          splitInputs.Add(fragment);
           fragment = null;
         }
       }
 
       if (fragment != null && fragment != "")
-        result.Add(fragment);
+        splitInputs.Add(fragment);
 
-      return result;
+
+      return splitInputs;
     }
 
     /// <summary>
@@ -580,8 +664,10 @@ namespace CalculatorApp
           || inputList[i] == "e" && i - 1 >= 0
           || inputList[i] == "(" && i - 1 >= 0)
         {
-          if (!IsOperator(inputList[i - 1]) && inputList[i - 1] != "sqrt" && inputList[i - 1] != "ln" && inputList[i - 1] != "log" 
-            && inputList[i - 1] != "cos" && inputList[i - 1] != "sin" && inputList[i - 1] != "tan")
+          if (!IsOperator(inputList[i - 1]) && inputList[i - 1] != "(" && inputList[i - 1] != ")" && inputList[i - 1] != "sqrt" 
+            && inputList[i - 1] != "ln" && inputList[i - 1] != "log" && inputList[i - 1] != "cos" && inputList[i - 1] != "sin" 
+            && inputList[i - 1] != "tan" && inputList[i - 1] != "arccos" && inputList[i - 1] != "arcsin" 
+            && inputList[i - 1] != "arctan")
             inputList.Insert(i, "*");
         }
         // adds * after
@@ -650,8 +736,10 @@ namespace CalculatorApp
     /// </summary>
     private void ClearOutput()
     {
+      errorCode = false;
       inputTextBox.Text = "";
       inputs.Clear();
+      splitInputs.Clear();
     }
 
     #endregion
@@ -674,6 +762,9 @@ namespace CalculatorApp
       
       string result = Calculate(input);
 
+      if (result == null)
+        return;
+
       ClearOutput();
       inputs.Add(result);
 
@@ -688,102 +779,153 @@ namespace CalculatorApp
 
     private void zeroBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "0";
       inputs.Add("0");
     }
 
     private void oneBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "1";
       inputs.Add("1");
     }
 
     private void twoBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "2";
       inputs.Add("2");
     }
 
     private void threeBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "3";
       inputs.Add("3");
     }
 
     private void fourBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "4";
       inputs.Add("4");
     }
 
     private void fiveBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "5";
       inputs.Add("5");
     }
 
     private void sixBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "6";
       inputs.Add("6");
     }
 
     private void sevenBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "7";
       inputs.Add("7");
     }
 
     private void eightBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "8";
       inputs.Add("8");
     }
 
     private void nineBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "9";
       inputs.Add("9");
     }
 
     private void leftBracketBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "(";
       inputs.Add("(");
     }
 
     private void rightBracketBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += ")";
       inputs.Add(")");
     }
 
     private void divisionBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "/";
       inputs.Add("/");
     }
 
     private void multiplicationBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "*";
       inputs.Add("*");
     }
 
     private void subtractionBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "-";
       inputs.Add("-");
     }
 
     private void additionBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "+";
       inputs.Add("+");
     }
 
     private void radDegBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       isRad = !isRad;
 
       if (isRad)
@@ -794,6 +936,9 @@ namespace CalculatorApp
 
     private void shiftBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       isInverse = !isInverse;
 
       if (isInverse)
@@ -820,6 +965,9 @@ namespace CalculatorApp
 
     private void squareRootBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       if (isInverse)
       {
         inputTextBox.Text += "^2";
@@ -834,6 +982,9 @@ namespace CalculatorApp
 
     private void exponentBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       if (isInverse)
       {
         inputTextBox.Text += ")^(1/";
@@ -848,6 +999,9 @@ namespace CalculatorApp
 
     private void logBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       if (isInverse)
       {
         inputTextBox.Text += "10^";
@@ -862,6 +1016,9 @@ namespace CalculatorApp
 
     private void lnBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       if (isInverse)
       {
         inputTextBox.Text += "e^";
@@ -876,6 +1033,9 @@ namespace CalculatorApp
 
     private void sinBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       if (isInverse)
       {
         inputTextBox.Text += "arcsin(";
@@ -890,6 +1050,9 @@ namespace CalculatorApp
 
     private void cosBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       if (isInverse)
       {
         inputTextBox.Text += "arccos(";
@@ -904,6 +1067,9 @@ namespace CalculatorApp
 
     private void tanBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       if (isInverse)
       {
         inputTextBox.Text += "arctan(";
@@ -918,18 +1084,27 @@ namespace CalculatorApp
 
     private void factorialBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "!";
       inputs.Add("!");
     }
 
     private void piBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "pi";
       inputs.Add("pi");
     }
 
     private void eBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "e";
       inputs.Add("e");
     }
@@ -941,12 +1116,18 @@ namespace CalculatorApp
 
     private void periodBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += ".";
       inputs.Add(".");
     }
 
     private void backspaceBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       if (inputs.Count <= 0) return;
 
       inputs.RemoveAt(inputs.Count - 1);
@@ -960,12 +1141,18 @@ namespace CalculatorApp
 
     private void expBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "E";
       inputs.Add("E");
     }
 
     private void ansBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       // retrieve last answer from history
       if (ansHistory.Count <= 0) return;
       inputTextBox.Text += "ans";
@@ -975,6 +1162,9 @@ namespace CalculatorApp
 
     private void percentBtn_Click(object sender, EventArgs e)
     {
+      if (errorCode)
+        ClearOutput();
+
       inputTextBox.Text += "%";
       inputs.Add("%");
     }
