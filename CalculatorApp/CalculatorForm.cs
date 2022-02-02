@@ -1,17 +1,22 @@
-﻿using System;
+﻿using MaterialSkin;
+using MaterialSkin.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
 namespace CalculatorApp
 {
-  public partial class calculatorForm : Form
+  public partial class calculatorForm : MaterialForm
   {
     private List<string> inputs = new List<string>();
     private string inputText;
     private List<string> splitInputs = new List<string>();
     private List<string> ansHistory = new List<string>();
+
+    private string piValue = "3.141592653589793238";
+    private string eValue = "2.718281828459045235";
+
     bool isInverse = false;
     bool isRad = true;
     bool errorCode = false;
@@ -19,6 +24,11 @@ namespace CalculatorApp
     public calculatorForm()
     {
       InitializeComponent();
+
+      var materialSkinManager = MaterialSkinManager.Instance;
+      materialSkinManager.AddFormToManage(this);
+      materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+      materialSkinManager.ColorScheme = new ColorScheme(Primary.BlueGrey800, Primary.BlueGrey900, Primary.BlueGrey500, Accent.LightBlue200, TextShade.WHITE);
     }
 
     /// <summary>
@@ -38,10 +48,10 @@ namespace CalculatorApp
       Stack<string> givenStack = new Stack<string>(input);
 
       PrepareCalculationHistory(input);
-      
+
       List<string> outputList = new List<string>();
       List<string> tempList = new List<string>();
-      
+
       int mainCount = givenStack.Count;
 
       bool startTempStore = false;
@@ -87,11 +97,11 @@ namespace CalculatorApp
             // Stores values in a stack and creates an empty stack
             startTempStore = false;
             List<string> list = new List<string>(tempList);
-            
+
             // First, do exponent calculation
-            Stack<string> firstOutput = ApplyExponentOrSquareRoot(list);
+            Stack<string> firstOutput = ApplyLogAndLn(list.ToList());
             // Secondly, do logarithms and ln 
-            Stack<string> secondOutput = ApplyLogAndLn(firstOutput.ToList());
+            Stack<string> secondOutput = ApplyExponentOrSquareRoot(firstOutput.ToList());
             // Thirdly, do cosine, sine and tangent
             Stack<string> thirdOutput = ApplyCosSinTan(secondOutput.ToList());
             // Fourthly, do multiplication and division
@@ -101,7 +111,7 @@ namespace CalculatorApp
 
             // finished calculating the temp list (within bracket calculations)
             tempList.Clear();
-            
+
             // Return the final result
             currVal = finalOutput.Pop();
           }
@@ -111,9 +121,9 @@ namespace CalculatorApp
             List<string> list = new List<string>(givenStack);
 
             // First, do exponent calculation
-            Stack<string> firstOutput = ApplyExponentOrSquareRoot(list);
+            Stack<string> firstOutput = ApplyLogAndLn(list.ToList());
             // Secondly, do logarithms and ln 
-            Stack<string> secondOutput = ApplyLogAndLn(firstOutput.ToList());
+            Stack<string> secondOutput = ApplyExponentOrSquareRoot(firstOutput.ToList());
             // Thirdly, do cosine, sine and tangent
             Stack<string> thirdOutput = ApplyCosSinTan(secondOutput.ToList());
             // Fourthly, do multiplication and division
@@ -264,7 +274,10 @@ namespace CalculatorApp
     /// <returns></returns>
     private Stack<string> ApplyLogAndLn(List<string> input)
     {
+      ApplyPercentage(input);
+
       // Stores values in a stack and creates an empty stack
+      input.Reverse();
       Stack<string> inputStack = new Stack<string>(input);
       Stack<string> outputStack = new Stack<string>();
       int count = inputStack.Count;
@@ -351,7 +364,7 @@ namespace CalculatorApp
             sum = MathF.Asin(float.Parse(nextVal));
           else if (currVal == "arccos")
             sum = MathF.Acos(float.Parse(nextVal));
-          else 
+          else
             sum = MathF.Atan(float.Parse(nextVal));
 
           outputStack.Push(sum.ToString());
@@ -372,10 +385,7 @@ namespace CalculatorApp
     /// <returns></returns>
     private Stack<string> ApplyExponentOrSquareRoot(List<string> input)
     {
-      ApplyPercentage(input);
-
       // Stores values in a stack and creates an empty stack
-      input.Reverse();
       Stack<string> inputStack = new Stack<string>(input);
       Stack<string> outputStack = new Stack<string>();
       int count = inputStack.Count;
@@ -501,12 +511,12 @@ namespace CalculatorApp
       bool unevenBrackets = false;
       bool startsWithOperator = false;
       bool noFollowingValueAfterOperator = false;
-      bool needClosingBracket = false;
+      int needClosingBracket = 0;
 
       int leftBracCount = inputs.FindAll(x => x == "(").Count + inputs.FindAll(x => x == "sqrt(").Count +
           inputs.FindAll(x => x == "log(").Count + inputs.FindAll(x => x == "ln(").Count +
           inputs.FindAll(x => x == "cos(").Count + inputs.FindAll(x => x == "sin(").Count +
-          inputs.FindAll(x => x == "tan(").Count + inputs.FindAll(x => x == "arccos(").Count + 
+          inputs.FindAll(x => x == "tan(").Count + inputs.FindAll(x => x == "arccos(").Count +
           inputs.FindAll(x => x == "arcsin(").Count + inputs.FindAll(x => x == "arctan(").Count;
       int rightBracCount = inputs.FindAll(x => x == ")").Count;
       bool isOperator = false;
@@ -521,8 +531,8 @@ namespace CalculatorApp
           unevenBrackets = true;
       for (int i = 0; i < splitInputs.Count; i++)
       {
-        if (IsNumber(splitInputs[i]) && splitInputs[i] != "pi" && splitInputs[i] != "e") 
-        { 
+        if (IsNumber(splitInputs[i]) && splitInputs[i] != "pi" && splitInputs[i] != "e" || splitInputs[i] == "ans")
+        {
           hasNumber = true;
           isOperator = false;
         }
@@ -530,36 +540,38 @@ namespace CalculatorApp
         {
           if (isOperator)
             noFollowingValueAfterOperator = true;
-          isOperator = true;
+          if (i < splitInputs.Count - 1)
+            isOperator = true;
         }
         if (IsNumber(splitInputs[i]) || splitInputs[i] == "(" || splitInputs[i] == ")")
           isOperator = false;
         if (splitInputs[i] == "(")
         {
-          needClosingBracket = true;
+          needClosingBracket++;
           if (i + 1 >= splitInputs.Count)
           {
             errorCode = true;
             error = "Format Error - must contain number(s) between brackets";
             return true;
           }
-          if (splitInputs[i+1] == ")")
+          if (splitInputs[i + 1] == ")")
           {
             errorCode = true;
             error = "Format Error - must contain number(s) between brackets";
             return true;
           }
         }
-        if (splitInputs[i] == ")" && needClosingBracket == false)
+        if (splitInputs[i] == ")" && needClosingBracket <= 0)
         {
           errorCode = true;
           error = "Format Error - need an opening bracket for each closing bracket";
           return true;
         }
-        if (splitInputs[i] == ")" && needClosingBracket)
-          needClosingBracket = false;
-
+        if (splitInputs[i] == ")" && needClosingBracket > 0)
+          needClosingBracket--;
       }
+
+
 
       if (!hasNumber)
       {
@@ -571,9 +583,9 @@ namespace CalculatorApp
       {
         errorCode = true;
         error = "Format Error - cannot start calculation with an operator";
-        return false;
+        return true;
       }
-      else if (unevenBrackets || needClosingBracket)
+      else if (unevenBrackets || needClosingBracket > 0)
       {
         errorCode = true;
         error = "Format Error - missing bracket(s)";
@@ -610,13 +622,18 @@ namespace CalculatorApp
     /// <returns></returns>
     private bool IsNumber(string input)
     {
-      bool check =  float.TryParse(input, out float r);
+      bool check = float.TryParse(input, out float r);
       return check;
     }
 
+    /// <summary>
+    /// Returns true if the given string value is an operator.
+    /// </summary>
+    /// <param name="val"></param>
+    /// <returns></returns>
     private bool IsOperator(string val)
     {
-      if (val == "+" || val == "-" || val == "/" || val == "*" || val == "^")
+      if (val == "+" || val == "-" || val == "/" || val == "*" || val == "^" || val == "%")
         return true;
       return false;
     }
@@ -688,12 +705,23 @@ namespace CalculatorApp
         if (inputList[i] == "pi" && i - 1 >= 0
           || inputList[i] == "sqrt" && i - 1 >= 0
           || inputList[i] == "e" && i - 1 >= 0
-          || inputList[i] == "(" && i - 1 >= 0)
+          || inputList[i] == "ln" && i - 1 >= 0
+          || inputList[i] == "log" && i - 1 >= 0
+          || inputList[i] == "sin" && i - 1 >= 0
+          || inputList[i] == "cos" && i - 1 >= 0
+          || inputList[i] == "tan" && i - 1 >= 0
+          || inputList[i] == "arcsin" && i - 1 >= 0
+          || inputList[i] == "arccos" && i - 1 >= 0
+          || inputList[i] == "arctan" && i - 1 >= 0)
         {
-          if (!IsOperator(inputList[i - 1]) && inputList[i - 1] != "(" && inputList[i - 1] != ")" && inputList[i - 1] != "sqrt" 
-            && inputList[i - 1] != "ln" && inputList[i - 1] != "log" && inputList[i - 1] != "cos" && inputList[i - 1] != "sin" 
-            && inputList[i - 1] != "tan" && inputList[i - 1] != "arccos" && inputList[i - 1] != "arcsin" 
-            && inputList[i - 1] != "arctan")
+          if (!IsOperator(inputList[i - 1]) && inputList[i - 1] != "(")
+            inputList.Insert(i, "*");
+        }
+        if (inputList[i] == "(" && i - 1 >= 0)
+        {
+          if (inputList[i - 1] != "sqrt" && inputList[i - 1] != "ln" && inputList[i - 1] != "log"
+            && inputList[i - 1] != "cos" && inputList[i - 1] != "sin" && inputList[i - 1] != "tan"
+            && inputList[i - 1] != "arccos" && inputList[i - 1] != "arcsin" && inputList[i - 1] != "arctan")
             inputList.Insert(i, "*");
         }
         // adds * after
@@ -701,7 +729,7 @@ namespace CalculatorApp
           || inputList[i] == "e" && i + 1 < inputList.Count
           || inputList[i] == ")" && i + 1 < inputList.Count)
         {
-          if (!IsOperator(inputList[i + 1]))
+          if (!IsOperator(inputList[i + 1]) && inputList[i + 1] != ")")
             inputList.Insert(i + 1, "*");
         }
         if (inputList[0] == "-" && i + 1 < inputList.Count)
@@ -725,9 +753,9 @@ namespace CalculatorApp
       for (int i = 0; i < inputList.Count; i++)
       {
         if (inputList[i] == "pi")
-          inputList[i] = "3.141592653589793238";
+          inputList[i] = piValue;
         else if (inputList[i] == "e")
-          inputList[i] = "2.718281828459045235";
+          inputList[i] = eValue;
       }
     }
 
@@ -773,6 +801,16 @@ namespace CalculatorApp
       inputText = null;
       for (int i = input.Count - 1; i >= 0; i--)
       {
+        if (input[i] == eValue)
+        {
+          inputText += "e";
+          continue;
+        }
+        if (input[i] == piValue)
+        {
+          inputText += "pi";
+          continue;
+        }
         inputText += input[i];
       }
     }
@@ -780,6 +818,7 @@ namespace CalculatorApp
     #endregion
 
     #region OnClick Events
+
     private void equalBtn_Click(object sender, EventArgs e)
     {
       string inputText = inputTextBox.Text;
@@ -794,7 +833,7 @@ namespace CalculatorApp
         inputTextBox.Text = inputText;
         return;
       }
-      
+
       string result = Calculate(input);
 
       if (result == null)
@@ -804,7 +843,7 @@ namespace CalculatorApp
 
       string calculation = new StringBuilder(this.inputText + " = " + result).ToString();
 
-      inputs.Add(calculation);
+      //inputs.Add(calculation);
 
       if (ansHistory.Count >= 5)
       {
@@ -984,10 +1023,10 @@ namespace CalculatorApp
         sinBtn.Text = "arcsin";
         cosBtn.Text = "arccos";
         tanBtn.Text = "arctan";
-        lnBtn.Text = "e\xB2";
-        logBtn.Text = "10\xB2";
-        squareRootBtn.Text = "x\xB2";
-        exponentBtn.Text = "sqrt(x)^(1/y)";
+        lnBtn.Text = "eˣ";
+        logBtn.Text = ("10ˣ");
+        squareRootBtn.Text = "x^2";
+        exponentBtn.Text = "√x";
       }
       else
       {
@@ -997,7 +1036,7 @@ namespace CalculatorApp
         lnBtn.Text = "ln";
         logBtn.Text = "log";
         squareRootBtn.Text = "sqrt";
-        exponentBtn.Text = "x^y";
+        exponentBtn.Text = "xy";
       }
     }
 
@@ -1098,8 +1137,8 @@ namespace CalculatorApp
       }
       else
       {
-        inputTextBox.Text += "arccos(";
-        inputs.Add("arccos(");
+        inputTextBox.Text += "cos(";
+        inputs.Add("cos(");
       }
     }
 
@@ -1213,15 +1252,9 @@ namespace CalculatorApp
 
     #endregion
 
-    private void outputTextBox_TextChanged(object sender, EventArgs e)
-    {
-
-    }
-
     private void inputTextBox_TextChanged(object sender, EventArgs e)
     {
 
     }
-
   }
 }
