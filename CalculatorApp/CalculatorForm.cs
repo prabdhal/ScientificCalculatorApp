@@ -25,6 +25,8 @@ namespace CalculatorApp
       InitializeComponent();
     }
 
+    #region Calculation Logic Methods
+
     /// <summary>
     /// Performs a complete calculation on the inputted values.
     /// </summary>
@@ -38,8 +40,10 @@ namespace CalculatorApp
         return null;
       }
 
-      input.Reverse();
-      Stack<string> givenStack = new Stack<string>(input);
+      List<string> updatedInput = ApplyEXPCalculation(input);
+
+      updatedInput.Reverse();
+      Stack<string> givenStack = new Stack<string>(updatedInput);
 
       PrepareCalculationHistory(input);
 
@@ -474,10 +478,56 @@ namespace CalculatorApp
       return val * ApplyFactorialCalculation((val - 1).ToString());
     }
 
+    /// <summary>
+    /// Applies decimal place calculations inputted values. 
+    /// </summary>
+    /// <param name="inputList"></param>
+    private List<string> ApplyEXPCalculation(List<string> inputList)
+    {
+      List<string> input = new List<string>(inputList);
+
+      for (int i = 0; i < input.Count; i++)
+      {
+        if (input[i] == "E" && i + 1 < input.Count)
+        {
+          int currVal = int.Parse(input[i - 1]);
+          int decVal = 0;
+          bool isNegative = false;
+
+          if (input[i + 1] == "-" && i + 2 < input.Count)
+          {
+            decVal = int.Parse(input[i + 2]);
+            isNegative = true;
+          }
+          else
+            decVal = int.Parse(input[i+1]);
+
+          string result = ApplyDecimalPlace(currVal, decVal, isNegative);
+
+          input.RemoveAt(i + 1);
+          input.RemoveAt(i);
+          if (isNegative)
+            input.RemoveAt(i);
+          input[i - 1] = result;
+        }
+      }
+      return input;
+    }
+    #endregion
+
+    #region Error Check Methods
+
+    /// <summary>
+    /// Outputs any errors before applying calculation.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="error"></param>
+    /// <returns></returns>
     private bool PrimaryErrorCheck(List<string> input, out string error)
     {
       error = null;
-      if (input[0].Equals("+") || input[0].Equals("*") || input[0].Equals("/") || input[0].Equals("^"))
+      if (input[0].Equals("+") || input[0].Equals("*") || input[0].Equals("/") || 
+        input[0].Equals("^") || input[0].Equals("E"))
       {
         errorCode = true;
         error = "Format Error - cannot start calculation with operators";
@@ -523,8 +573,51 @@ namespace CalculatorApp
       if (splitInputs.Contains("(") || splitInputs.Contains(")"))
         if (leftBracCount != rightBracCount)
           unevenBrackets = true;
+
       for (int i = 0; i < splitInputs.Count; i++)
       {
+        if (splitInputs[i] == "E")
+        {
+          if (i - 1 < 0 || i + 1 >= splitInputs.Count)
+          {
+            errorCode = true;
+            error = "Format Error - must have values before and after 'E'";
+            return true;
+          }
+          if (i - 1 >= 0 && i + 1 < splitInputs.Count)
+          {
+            if (splitInputs[i - 1].Contains('.'))
+            {
+              errorCode = true;
+              error = "Format Error - cannot have a decimal value before 'E'";
+              return true;
+            }
+            if (splitInputs[i + 1] == "-")
+            {
+              if (i + 2 >= splitInputs.Count)
+              {
+                errorCode = true;
+                error = "Format Error - must have a value after 'E'";
+                return true;
+              }
+              else
+              {
+                if (!IsNumber(splitInputs[i + 2]))
+                {
+                  errorCode = true;
+                  error = "Format Error - must have a number value after 'E'";
+                  return true;
+                }
+              }
+            }
+            else if (!IsNumber(splitInputs[i + 1]) || !IsNumber(splitInputs[i - 1]))
+            {
+              errorCode = true;
+              error = "Format Error - must have values before and after 'E'";
+              return true;
+            }
+          }
+        }
         if (IsNumber(splitInputs[i]) && splitInputs[i] != "π" && splitInputs[i] != "e" || splitInputs[i] == "ans")
         {
           hasNumber = true;
@@ -595,6 +688,11 @@ namespace CalculatorApp
       return false;
     }
 
+    #endregion
+
+    /// <summary>
+    /// Display history and input calculations as user inputs.
+    /// </summary>
     private void DisplayOutputText()
     {
       outputTextBox.Clear();
@@ -647,7 +745,8 @@ namespace CalculatorApp
 
       for (int i = 0; i < input.Length; i++)
       {
-        if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == '*' || input[i] == '(' || input[i] == ')' || input[i] == '^' || input[i] == '%')
+        if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == '*' || 
+          input[i] == '(' || input[i] == ')' || input[i] == '^' || input[i] == '%' || input[i] == 'E')
         {
           if (fragment != null && fragment != "")
           {
@@ -733,9 +832,42 @@ namespace CalculatorApp
             inputList[0] = "-" + inputList[1];
             inputList.RemoveAt(1);
           }
-
         }
       }
+    }
+
+    /// <summary>
+    /// Returns string with decimal places applied.
+    /// </summary>
+    /// <param name="val"></param>
+    /// <param name="place"></param>
+    /// <param name="isNegative"></param>
+    /// <returns></returns>
+    private string ApplyDecimalPlace(double val, int place, bool isNegative)
+    {
+      int counter = place - 1;
+      string result = "";
+
+      if (isNegative)
+      {
+        result = "0.";
+        while (counter > 0)
+        {
+          result += "0";
+          counter--;
+        }
+        return result += val;
+      }
+
+      counter = place;
+      result = val.ToString();
+
+      while (counter > 0)
+      {
+        result += "0";
+        counter--;
+      }
+      return result;
     }
 
     /// <summary>
@@ -793,7 +925,7 @@ namespace CalculatorApp
     private void PrepareCalculationHistory(List<string> input)
     {
       inputText = null;
-      for (int i = input.Count - 1; i >= 0; i--)
+      for (int i = 0; i < input.Count; i++)
       {
         if (input[i] == eValue)
         {
@@ -1239,11 +1371,6 @@ namespace CalculatorApp
       else
         radDegBtn.Text = "Deg";
     }
-
-    #endregion
-
-    #region Design Methods
-
 
     #endregion
   }

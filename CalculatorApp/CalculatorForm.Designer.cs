@@ -33,7 +33,7 @@ namespace CalculatorApp
       this.dataGridView1 = new System.Windows.Forms.DataGridView();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-      this.button1 = new System.Windows.Forms.Button();
+      this.additionBtn = new System.Windows.Forms.Button();
       this.equalBtn = new System.Windows.Forms.Button();
       this.periodBtn = new System.Windows.Forms.Button();
       this.zeroBtn = new System.Windows.Forms.Button();
@@ -67,7 +67,7 @@ namespace CalculatorApp
       this.leftBracketBtn = new System.Windows.Forms.Button();
       this.factorialBtn = new System.Windows.Forms.Button();
       this.radDegBtn = new System.Windows.Forms.Button();
-      this.btn = new System.Windows.Forms.Button();
+      this.expBtn = new System.Windows.Forms.Button();
       this.outputTextBox = new System.Windows.Forms.RichTextBox();
       this.inputTextBox = new System.Windows.Forms.RichTextBox();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -127,12 +127,8 @@ namespace CalculatorApp
       this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
       this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
       this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
-      this.tableLayoutPanel2.Controls.Add(this.button1, 0, 4);
       this.tableLayoutPanel2.Controls.Add(this.equalBtn, 5, 4);
-      this.tableLayoutPanel2.Controls.Add(this.periodBtn, 4, 4);
-      this.tableLayoutPanel2.Controls.Add(this.zeroBtn, 3, 4);
       this.tableLayoutPanel2.Controls.Add(this.exponentBtn, 2, 4);
-      this.tableLayoutPanel2.Controls.Add(this.percentBtn, 1, 4);
       this.tableLayoutPanel2.Controls.Add(this.ansBtn, 0, 4);
       this.tableLayoutPanel2.Controls.Add(this.subtractionBtn, 6, 3);
       this.tableLayoutPanel2.Controls.Add(this.threeBtn, 5, 3);
@@ -161,7 +157,11 @@ namespace CalculatorApp
       this.tableLayoutPanel2.Controls.Add(this.leftBracketBtn, 3, 0);
       this.tableLayoutPanel2.Controls.Add(this.factorialBtn, 2, 0);
       this.tableLayoutPanel2.Controls.Add(this.radDegBtn, 0, 0);
-      this.tableLayoutPanel2.Controls.Add(this.btn, 1, 0);
+      this.tableLayoutPanel2.Controls.Add(this.expBtn, 1, 0);
+      this.tableLayoutPanel2.Controls.Add(this.percentBtn, 0, 4);
+      this.tableLayoutPanel2.Controls.Add(this.additionBtn, 6, 4);
+      this.tableLayoutPanel2.Controls.Add(this.periodBtn, 3, 4);
+      this.tableLayoutPanel2.Controls.Add(this.zeroBtn, 4, 4);
       this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 165);
       this.tableLayoutPanel2.Name = "tableLayoutPanel2";
       this.tableLayoutPanel2.RowCount = 5;
@@ -174,26 +174,27 @@ namespace CalculatorApp
       this.tableLayoutPanel2.Size = new System.Drawing.Size(485, 376);
       this.tableLayoutPanel2.TabIndex = 0;
       // 
-      // button1
+      // additionBtn
       // 
-      this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.additionBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.button1.Location = new System.Drawing.Point(3, 303);
-      this.button1.Name = "button1";
-      this.button1.Size = new System.Drawing.Size(63, 70);
-      this.button1.TabIndex = 35;
-      this.button1.Text = "AC";
-      this.button1.UseVisualStyleBackColor = true;
+      this.additionBtn.Location = new System.Drawing.Point(417, 303);
+      this.additionBtn.Name = "additionBtn";
+      this.additionBtn.Size = new System.Drawing.Size(65, 70);
+      this.additionBtn.TabIndex = 35;
+      this.additionBtn.Text = "+";
+      this.additionBtn.UseVisualStyleBackColor = true;
+      this.additionBtn.Click += new System.EventHandler(this.additionBtn_Click);
       // 
       // equalBtn
       // 
       this.equalBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.equalBtn.Location = new System.Drawing.Point(417, 303);
+      this.equalBtn.Location = new System.Drawing.Point(348, 303);
       this.equalBtn.Name = "equalBtn";
-      this.equalBtn.Size = new System.Drawing.Size(65, 70);
+      this.equalBtn.Size = new System.Drawing.Size(63, 70);
       this.equalBtn.TabIndex = 33;
       this.equalBtn.Text = "=";
       this.equalBtn.UseVisualStyleBackColor = true;
@@ -204,7 +205,7 @@ namespace CalculatorApp
       this.periodBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.periodBtn.Location = new System.Drawing.Point(348, 303);
+      this.periodBtn.Location = new System.Drawing.Point(210, 303);
       this.periodBtn.Name = "periodBtn";
       this.periodBtn.Size = new System.Drawing.Size(63, 70);
       this.periodBtn.TabIndex = 32;
@@ -230,7 +231,7 @@ namespace CalculatorApp
       this.exponentBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.exponentBtn.Location = new System.Drawing.Point(210, 303);
+      this.exponentBtn.Location = new System.Drawing.Point(141, 303);
       this.exponentBtn.Name = "exponentBtn";
       this.exponentBtn.Size = new System.Drawing.Size(63, 70);
       this.exponentBtn.TabIndex = 30;
@@ -243,7 +244,7 @@ namespace CalculatorApp
       this.percentBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.percentBtn.Location = new System.Drawing.Point(141, 303);
+      this.percentBtn.Location = new System.Drawing.Point(72, 303);
       this.percentBtn.Name = "percentBtn";
       this.percentBtn.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
       this.percentBtn.Size = new System.Drawing.Size(63, 70);
@@ -257,7 +258,7 @@ namespace CalculatorApp
       this.ansBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.ansBtn.Location = new System.Drawing.Point(72, 303);
+      this.ansBtn.Location = new System.Drawing.Point(3, 303);
       this.ansBtn.Name = "ansBtn";
       this.ansBtn.Size = new System.Drawing.Size(63, 70);
       this.ansBtn.TabIndex = 28;
@@ -616,17 +617,18 @@ namespace CalculatorApp
       this.radDegBtn.UseVisualStyleBackColor = true;
       this.radDegBtn.Click += new System.EventHandler(this.radDegBtn_Click);
       // 
-      // btn
+      // expBtn
       // 
-      this.btn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.expBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.btn.Location = new System.Drawing.Point(72, 3);
-      this.btn.Name = "btn";
-      this.btn.Size = new System.Drawing.Size(63, 69);
-      this.btn.TabIndex = 1;
-      this.btn.Text = "AC";
-      this.btn.UseVisualStyleBackColor = true;
+      this.expBtn.Location = new System.Drawing.Point(72, 3);
+      this.expBtn.Name = "expBtn";
+      this.expBtn.Size = new System.Drawing.Size(63, 69);
+      this.expBtn.TabIndex = 1;
+      this.expBtn.Text = "EXP";
+      this.expBtn.UseVisualStyleBackColor = true;
+      this.expBtn.Click += new System.EventHandler(this.expBtn_Click);
       // 
       // outputTextBox
       // 
@@ -722,8 +724,8 @@ namespace CalculatorApp
     private System.Windows.Forms.Button rightBracketBtn;
     private System.Windows.Forms.Button leftBracketBtn;
     private System.Windows.Forms.Button factorialBtn;
-    private System.Windows.Forms.Button btn;
-    private System.Windows.Forms.Button button1;
+    private System.Windows.Forms.Button expBtn;
+    private System.Windows.Forms.Button additionBtn;
     private System.Windows.Forms.Button radDegBtn;
   }
 }
