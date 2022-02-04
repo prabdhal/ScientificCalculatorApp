@@ -1,13 +1,12 @@
-﻿using MaterialSkin;
-using MaterialSkin.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace CalculatorApp
 {
-  public partial class calculatorForm : MaterialForm
+  public partial class calculatorForm : Form
   {
     private List<string> inputs = new List<string>();
     private string inputText;
@@ -24,11 +23,6 @@ namespace CalculatorApp
     public calculatorForm()
     {
       InitializeComponent();
-
-      var materialSkinManager = MaterialSkinManager.Instance;
-      materialSkinManager.AddFormToManage(this);
-      materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-      materialSkinManager.ColorScheme = new ColorScheme(Primary.BlueGrey800, Primary.BlueGrey900, Primary.BlueGrey500, Accent.LightBlue200, TextShade.WHITE);
     }
 
     /// <summary>
@@ -531,7 +525,7 @@ namespace CalculatorApp
           unevenBrackets = true;
       for (int i = 0; i < splitInputs.Count; i++)
       {
-        if (IsNumber(splitInputs[i]) && splitInputs[i] != "pi" && splitInputs[i] != "e" || splitInputs[i] == "ans")
+        if (IsNumber(splitInputs[i]) && splitInputs[i] != "π" && splitInputs[i] != "e" || splitInputs[i] == "ans")
         {
           hasNumber = true;
           isOperator = false;
@@ -679,7 +673,7 @@ namespace CalculatorApp
         fragment += input[i];
 
         // Case: when single input of pi or e
-        if (fragment == "pi" || fragment == "e")
+        if (fragment == "π" || fragment == "e")
         {
           splitInputs.Add(fragment);
           fragment = null;
@@ -702,7 +696,7 @@ namespace CalculatorApp
       for (int i = 0; i < inputList.Count; i++)
       {
         // adds * before
-        if (inputList[i] == "pi" && i - 1 >= 0
+        if (inputList[i] == "π" && i - 1 >= 0
           || inputList[i] == "sqrt" && i - 1 >= 0
           || inputList[i] == "e" && i - 1 >= 0
           || inputList[i] == "ln" && i - 1 >= 0
@@ -725,7 +719,7 @@ namespace CalculatorApp
             inputList.Insert(i, "*");
         }
         // adds * after
-        if (inputList[i] == "pi" && i + 1 < inputList.Count
+        if (inputList[i] == "π" && i + 1 < inputList.Count
           || inputList[i] == "e" && i + 1 < inputList.Count
           || inputList[i] == ")" && i + 1 < inputList.Count)
         {
@@ -752,7 +746,7 @@ namespace CalculatorApp
     {
       for (int i = 0; i < inputList.Count; i++)
       {
-        if (inputList[i] == "pi")
+        if (inputList[i] == "π")
           inputList[i] = piValue;
         else if (inputList[i] == "e")
           inputList[i] = eValue;
@@ -808,7 +802,7 @@ namespace CalculatorApp
         }
         if (input[i] == piValue)
         {
-          inputText += "pi";
+          inputText += "π";
           continue;
         }
         inputText += input[i];
@@ -998,19 +992,6 @@ namespace CalculatorApp
       inputs.Add("+");
     }
 
-    private void radDegBtn_Click(object sender, EventArgs e)
-    {
-      if (errorCode)
-        ClearOutput();
-
-      isRad = !isRad;
-
-      if (isRad)
-        radDegBtn.Text = "Rad";
-      else
-        radDegBtn.Text = "Deg";
-    }
-
     private void shiftBtn_Click(object sender, EventArgs e)
     {
       if (errorCode)
@@ -1173,8 +1154,8 @@ namespace CalculatorApp
       if (errorCode)
         ClearOutput();
 
-      inputTextBox.Text += "pi";
-      inputs.Add("pi");
+      inputTextBox.Text += "π";
+      inputs.Add("π");
     }
 
     private void eBtn_Click(object sender, EventArgs e)
@@ -1245,16 +1226,25 @@ namespace CalculatorApp
       inputTextBox.Text += "%";
       inputs.Add("%");
     }
+
+    private void radDegBtn_Click(object sender, EventArgs e)
+    {
+      if (errorCode)
+        ClearOutput();
+
+      isRad = !isRad;
+
+      if (isRad)
+        radDegBtn.Text = "Rad";
+      else
+        radDegBtn.Text = "Deg";
+    }
+
     #endregion
 
     #region Design Methods
 
 
     #endregion
-
-    private void inputTextBox_TextChanged(object sender, EventArgs e)
-    {
-
-    }
   }
 }
