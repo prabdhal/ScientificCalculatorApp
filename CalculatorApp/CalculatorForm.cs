@@ -352,18 +352,24 @@ namespace CalculatorApp
           if (nextVal.EndsWith('!'))
             nextVal = ApplyFactorialCalculation(nextVal).ToString();
 
+          float val = float.Parse(nextVal);
+
+          if (radDegBtn.Text == "Deg")
+            val *= (float.Parse(piValue)/180f);
+
           if (currVal == "sin")
-            sum = MathF.Sin(float.Parse(nextVal));
+            sum = MathF.Sin(val);
           else if (currVal == "cos")
-            sum = MathF.Cos(float.Parse(nextVal));
+            sum = MathF.Cos(val);
           else if (currVal == "tan")
-            sum = MathF.Tan(float.Parse(nextVal));
+            sum = MathF.Tan(val);
           else if (currVal == "arcsin")
-            sum = MathF.Asin(float.Parse(nextVal));
+            sum = MathF.Asin(val);
           else if (currVal == "arccos")
-            sum = MathF.Acos(float.Parse(nextVal));
+            sum = MathF.Acos(val);
           else
-            sum = MathF.Atan(float.Parse(nextVal));
+            sum = MathF.Atan(val);
+
 
           outputStack.Push(sum.ToString());
           j++;
@@ -424,7 +430,7 @@ namespace CalculatorApp
           j++;
           continue;
         }
-        else if (currVal == "sqrt")
+        else if (currVal == "√")
         {
           nextVal = inputStack.Pop();
 
@@ -557,7 +563,7 @@ namespace CalculatorApp
       bool noFollowingValueAfterOperator = false;
       int needClosingBracket = 0;
 
-      int leftBracCount = inputs.FindAll(x => x == "(").Count + inputs.FindAll(x => x == "sqrt(").Count +
+      int leftBracCount = inputs.FindAll(x => x == "(").Count + inputs.FindAll(x => x == "√(").Count +
           inputs.FindAll(x => x == "log(").Count + inputs.FindAll(x => x == "ln(").Count +
           inputs.FindAll(x => x == "cos(").Count + inputs.FindAll(x => x == "sin(").Count +
           inputs.FindAll(x => x == "tan(").Count + inputs.FindAll(x => x == "arccos(").Count +
@@ -796,7 +802,7 @@ namespace CalculatorApp
       {
         // adds * before
         if (inputList[i] == "π" && i - 1 >= 0
-          || inputList[i] == "sqrt" && i - 1 >= 0
+          || inputList[i] == "√" && i - 1 >= 0
           || inputList[i] == "e" && i - 1 >= 0
           || inputList[i] == "ln" && i - 1 >= 0
           || inputList[i] == "log" && i - 1 >= 0
@@ -812,9 +818,10 @@ namespace CalculatorApp
         }
         if (inputList[i] == "(" && i - 1 >= 0)
         {
-          if (inputList[i - 1] != "sqrt" && inputList[i - 1] != "ln" && inputList[i - 1] != "log"
+          if (inputList[i - 1] != "√" && inputList[i - 1] != "ln" && inputList[i - 1] != "log"
             && inputList[i - 1] != "cos" && inputList[i - 1] != "sin" && inputList[i - 1] != "tan"
-            && inputList[i - 1] != "arccos" && inputList[i - 1] != "arcsin" && inputList[i - 1] != "arctan")
+            && inputList[i - 1] != "arccos" && inputList[i - 1] != "arcsin" && inputList[i - 1] != "arctan"
+             && inputList[i - 1] != "^")
             inputList.Insert(i, "*");
         }
         // adds * after
@@ -1138,8 +1145,8 @@ namespace CalculatorApp
         tanBtn.Text = "arctan";
         lnBtn.Text = "eˣ";
         logBtn.Text = ("10ˣ");
-        squareRootBtn.Text = "x^2";
-        exponentBtn.Text = "√x";
+        squareRootBtn.Text = "x\u00B2";
+        exponentBtn.Text = "ʸ√x";
       }
       else
       {
@@ -1148,8 +1155,8 @@ namespace CalculatorApp
         tanBtn.Text = "tan";
         lnBtn.Text = "ln";
         logBtn.Text = "log";
-        squareRootBtn.Text = "sqrt";
-        exponentBtn.Text = "xy";
+        squareRootBtn.Text = "√";
+        exponentBtn.Text = "xʸ";
       }
     }
 
@@ -1165,8 +1172,8 @@ namespace CalculatorApp
       }
       else
       {
-        inputTextBox.Text += "sqrt(";
-        inputs.Add("sqrt(");
+        inputTextBox.Text += "√(";
+        inputs.Add("√(");
       }
     }
 
