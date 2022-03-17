@@ -624,7 +624,7 @@ namespace CalculatorApp
             }
           }
         }
-        if (IsNumber(splitInputs[i]) && splitInputs[i] != "π" && splitInputs[i] != "e" || splitInputs[i] == "ans")
+        if (IsNumber(splitInputs[i]) && splitInputs[i] != "π" && splitInputs[i] != "e" || splitInputs[i] == "ans" || splitInputs[i].Contains("!"))
         {
           hasNumber = true;
           isOperator = false;
@@ -950,7 +950,7 @@ namespace CalculatorApp
 
     #endregion
 
-    #region OnClick Events
+      #region OnClick Events
 
     private void equalBtn_Click(object sender, EventArgs e)
     {

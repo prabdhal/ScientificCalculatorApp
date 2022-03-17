@@ -1,0 +1,16 @@
+HCL - DEVELOPER/IT
+
+Blaze Application is part of the Risk Ecosystem of Western Union which helps in detecting fraud
+> Uses Blaze .Net Application 
+> FICO Rules engine based on customer behaviour, customer data & various external vendor responses
+
+Blaze exposes WCFServices, Web API & WebServices to different WU digital 
+and Core Systems to collect transaction data and state machines
+> Runs on Legacy (SOAP Services) and Mustang frameworks (Web API)
+
+Blaze provides the transaction object / Risk Object to downstream systems like Compute Service,
+Hadoop, EMS, Neo4J etc. to do age variable calculation, Velocity Variable calculation, 
+Data modeling, Behaviour analysis to define the different fraud patterns/Rules for future 
+blocking of the fraud customers
+
+220758
