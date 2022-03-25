@@ -674,9 +674,9 @@ namespace CalculatorApp
           hasNumber = true;
           isOperator = false;
         }
-        if (IsOperator(splitInputs[i]))
+        if (IsOperator(splitInputs[i]) || splitInputs[i] == "^")
         {
-          if (isOperator)
+          if (isOperator || splitInputs[i] == "^")
             noFollowingValueAfterOperator = true;
           if (i < splitInputs.Count - 1)
             isOperator = true;
@@ -850,7 +850,7 @@ namespace CalculatorApp
           if (inputList[i - 1] != "√" && inputList[i - 1] != "ln" && inputList[i - 1] != "log"
             && inputList[i - 1] != "cos" && inputList[i - 1] != "sin" && inputList[i - 1] != "tan"
             && inputList[i - 1] != "arccos" && inputList[i - 1] != "arcsin" && inputList[i - 1] != "arctan"
-             && inputList[i - 1] != "^")
+             && inputList[i - 1] != "^" && !IsOperator(inputList[i - 1]))
             inputList.Insert(i, "*");
         }
         // adds * after

@@ -587,6 +587,7 @@ namespace CalculatorApp
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.clearBtn.BackColor = System.Drawing.Color.Maroon;
+      this.clearBtn.FlatAppearance.BorderColor = System.Drawing.Color.White;
       this.clearBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
       this.clearBtn.Location = new System.Drawing.Point(416, 3);
       this.clearBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -717,6 +718,7 @@ namespace CalculatorApp
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.additionBtn.BackColor = System.Drawing.Color.DarkOrange;
+      this.additionBtn.FlatAppearance.BorderColor = System.Drawing.Color.Red;
       this.additionBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
       this.additionBtn.Location = new System.Drawing.Point(416, 303);
       this.additionBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -812,7 +814,7 @@ namespace CalculatorApp
       this.MinimumSize = new System.Drawing.Size(501, 550);
       this.Name = "calculatorForm";
       this.Padding = new System.Windows.Forms.Padding(2, 64, 0, 0);
-      this.Text = "Calculator";
+      this.Text = "Scientific Calculator";
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
       this.tableLayoutPanel1.ResumeLayout(false);
       this.tableLayoutPanel2.ResumeLayout(false);
