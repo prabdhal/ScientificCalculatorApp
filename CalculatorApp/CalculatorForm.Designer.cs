@@ -162,6 +162,7 @@ namespace CalculatorApp
       this.tableLayoutPanel2.Controls.Add(this.additionBtn, 6, 4);
       this.tableLayoutPanel2.Controls.Add(this.periodBtn, 3, 4);
       this.tableLayoutPanel2.Controls.Add(this.zeroBtn, 4, 4);
+      this.tableLayoutPanel2.Font = new System.Drawing.Font("Comic Sans MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
       this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 165);
       this.tableLayoutPanel2.Name = "tableLayoutPanel2";
       this.tableLayoutPanel2.RowCount = 5;
@@ -638,6 +639,7 @@ namespace CalculatorApp
       this.outputTextBox.BackColor = System.Drawing.SystemColors.Window;
       this.outputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.outputTextBox.DetectUrls = false;
+      this.outputTextBox.Font = new System.Drawing.Font("Comic Sans MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
       this.outputTextBox.Location = new System.Drawing.Point(5, 5);
       this.outputTextBox.Margin = new System.Windows.Forms.Padding(5);
       this.outputTextBox.Name = "outputTextBox";
@@ -655,6 +657,7 @@ namespace CalculatorApp
             | System.Windows.Forms.AnchorStyles.Right)));
       this.inputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.inputTextBox.DetectUrls = false;
+      this.inputTextBox.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
       this.inputTextBox.Location = new System.Drawing.Point(3, 111);
       this.inputTextBox.Multiline = false;
       this.inputTextBox.Name = "inputTextBox";

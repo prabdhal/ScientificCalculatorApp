@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -20,10 +21,55 @@ namespace CalculatorApp
     bool isRad = true;
     bool errorCode = false;
 
+    private const float LARGER_FONT_FACTOR = 1.5f;
+    private const float SMALLER_FONT_FACTOR = 0.8f;
+
+    private int _lastFormSize;
+
     public calculatorForm()
     {
       InitializeComponent();
+
+      this.Resize += new EventHandler(CalculatorForm_Resize);
+      _lastFormSize = GetFormArea(this.Size);
     }
+
+    private int GetFormArea(Size size)
+    {
+      return size.Height * size.Width;
+    }
+
+    private void CalculatorForm_Resize(object sender, EventArgs e)
+    {
+      Control control = (Control)sender;
+
+      float scaleFactor = (float)GetFormArea(control.Size) / ((float)_lastFormSize*3.5f);
+
+      ResizeFont(this.Controls, scaleFactor);
+
+      _lastFormSize = GetFormArea(control.Size);
+    }
+
+    private void ResizeFont(Control.ControlCollection coll, float scaleFactor)
+    {
+      foreach (Control c in coll)
+      {
+        if (c.HasChildren)
+        {
+          ResizeFont(c.Controls, scaleFactor);
+        }
+        else
+        {
+          //if (c.GetType().ToString() == "System.Windows.Form.Label")
+          if (true)
+          {
+            // scale font
+            c.Font = new Font(c.Font.FontFamily.Name, c.Font.Size * scaleFactor);
+          }
+        }
+      }
+    }
+
 
     #region Calculation Logic Methods
 
@@ -696,22 +742,6 @@ namespace CalculatorApp
 
     #endregion
 
-    /// <summary>
-    /// Display history and input calculations as user inputs.
-    /// </summary>
-    private void DisplayOutputText()
-    {
-      outputTextBox.Clear();
-      StringBuilder sb = new StringBuilder();
-
-      for (int i = 0; i < ansHistory.Count; i++)
-      {
-        sb.AppendLine(ansHistory[i]);
-      }
-
-      outputTextBox.Text = sb.ToString();
-    }
-
     #region Helper Methods
     /// <summary>
     /// Returns true if the given string value is a number.
@@ -948,9 +978,25 @@ namespace CalculatorApp
       }
     }
 
+    /// <summary>
+    /// Display history and input calculations as user inputs.
+    /// </summary>
+    private void DisplayOutputText()
+    {
+      outputTextBox.Clear();
+      StringBuilder sb = new StringBuilder();
+
+      for (int i = 0; i < ansHistory.Count; i++)
+      {
+        sb.AppendLine(ansHistory[i]);
+      }
+
+      outputTextBox.Text = sb.ToString();
+    }
+
     #endregion
 
-      #region OnClick Events
+    #region OnClick Events
 
     private void equalBtn_Click(object sender, EventArgs e)
     {
@@ -1380,5 +1426,6 @@ namespace CalculatorApp
     }
 
     #endregion
+
   }
 }
