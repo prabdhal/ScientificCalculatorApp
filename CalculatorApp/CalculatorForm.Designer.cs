@@ -29,6 +29,8 @@ namespace CalculatorApp
     /// </summary>
     private void InitializeComponent()
     {
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
       this.MainColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.dataGridView1 = new System.Windows.Forms.DataGridView();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -83,13 +85,30 @@ namespace CalculatorApp
       // dataGridView1
       // 
       this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
+      dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+      dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+      dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+      dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+      dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+      dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+      dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+      this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
       this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.MainColumn});
+      dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+      dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+      dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+      dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+      dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+      dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+      dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+      this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
       this.dataGridView1.Location = new System.Drawing.Point(5, 5);
+      this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.dataGridView1.Name = "dataGridView1";
       this.dataGridView1.RowTemplate.Height = 25;
-      this.dataGridView1.Size = new System.Drawing.Size(491, 542);
+      this.dataGridView1.Size = new System.Drawing.Size(492, 542);
       this.dataGridView1.TabIndex = 0;
       // 
       // tableLayoutPanel1
@@ -104,13 +123,15 @@ namespace CalculatorApp
       this.tableLayoutPanel1.Controls.Add(this.outputTextBox, 0, 0);
       this.tableLayoutPanel1.Controls.Add(this.inputTextBox, 0, 1);
       this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 3);
+      this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+      this.tableLayoutPanel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
       this.tableLayoutPanel1.RowCount = 3;
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-      this.tableLayoutPanel1.Size = new System.Drawing.Size(491, 544);
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(492, 544);
       this.tableLayoutPanel1.TabIndex = 1;
       // 
       // tableLayoutPanel2
@@ -162,8 +183,9 @@ namespace CalculatorApp
       this.tableLayoutPanel2.Controls.Add(this.additionBtn, 6, 4);
       this.tableLayoutPanel2.Controls.Add(this.periodBtn, 3, 4);
       this.tableLayoutPanel2.Controls.Add(this.zeroBtn, 4, 4);
-      this.tableLayoutPanel2.Font = new System.Drawing.Font("Comic Sans MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-      this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 165);
+      this.tableLayoutPanel2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+      this.tableLayoutPanel2.Location = new System.Drawing.Point(2, 165);
+      this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.tableLayoutPanel2.Name = "tableLayoutPanel2";
       this.tableLayoutPanel2.RowCount = 5;
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
@@ -172,7 +194,7 @@ namespace CalculatorApp
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-      this.tableLayoutPanel2.Size = new System.Drawing.Size(485, 376);
+      this.tableLayoutPanel2.Size = new System.Drawing.Size(488, 376);
       this.tableLayoutPanel2.TabIndex = 0;
       // 
       // equalBtn
@@ -180,12 +202,15 @@ namespace CalculatorApp
       this.equalBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.equalBtn.Location = new System.Drawing.Point(348, 303);
+      this.equalBtn.BackColor = System.Drawing.Color.DarkOrange;
+      this.equalBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.equalBtn.Location = new System.Drawing.Point(347, 303);
+      this.equalBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.equalBtn.Name = "equalBtn";
-      this.equalBtn.Size = new System.Drawing.Size(63, 70);
+      this.equalBtn.Size = new System.Drawing.Size(65, 70);
       this.equalBtn.TabIndex = 33;
       this.equalBtn.Text = "=";
-      this.equalBtn.UseVisualStyleBackColor = true;
+      this.equalBtn.UseVisualStyleBackColor = false;
       this.equalBtn.Click += new System.EventHandler(this.equalBtn_Click);
       // 
       // exponentBtn
@@ -193,12 +218,15 @@ namespace CalculatorApp
       this.exponentBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.exponentBtn.Location = new System.Drawing.Point(141, 303);
+      this.exponentBtn.BackColor = System.Drawing.Color.Gray;
+      this.exponentBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.exponentBtn.Location = new System.Drawing.Point(140, 303);
+      this.exponentBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.exponentBtn.Name = "exponentBtn";
-      this.exponentBtn.Size = new System.Drawing.Size(63, 70);
+      this.exponentBtn.Size = new System.Drawing.Size(65, 70);
       this.exponentBtn.TabIndex = 30;
       this.exponentBtn.Text = "xʸ";
-      this.exponentBtn.UseVisualStyleBackColor = true;
+      this.exponentBtn.UseVisualStyleBackColor = false;
       this.exponentBtn.Click += new System.EventHandler(this.exponentBtn_Click);
       // 
       // ansBtn
@@ -206,12 +234,15 @@ namespace CalculatorApp
       this.ansBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.ansBtn.Location = new System.Drawing.Point(3, 303);
+      this.ansBtn.BackColor = System.Drawing.Color.Gray;
+      this.ansBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.ansBtn.Location = new System.Drawing.Point(2, 303);
+      this.ansBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.ansBtn.Name = "ansBtn";
-      this.ansBtn.Size = new System.Drawing.Size(63, 70);
+      this.ansBtn.Size = new System.Drawing.Size(65, 70);
       this.ansBtn.TabIndex = 28;
       this.ansBtn.Text = "ans";
-      this.ansBtn.UseVisualStyleBackColor = true;
+      this.ansBtn.UseVisualStyleBackColor = false;
       this.ansBtn.Click += new System.EventHandler(this.ansBtn_Click);
       // 
       // subtractionBtn
@@ -219,12 +250,15 @@ namespace CalculatorApp
       this.subtractionBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.subtractionBtn.Location = new System.Drawing.Point(417, 228);
+      this.subtractionBtn.BackColor = System.Drawing.Color.DarkOrange;
+      this.subtractionBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.subtractionBtn.Location = new System.Drawing.Point(416, 228);
+      this.subtractionBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.subtractionBtn.Name = "subtractionBtn";
-      this.subtractionBtn.Size = new System.Drawing.Size(65, 69);
+      this.subtractionBtn.Size = new System.Drawing.Size(70, 69);
       this.subtractionBtn.TabIndex = 27;
       this.subtractionBtn.Text = "-";
-      this.subtractionBtn.UseVisualStyleBackColor = true;
+      this.subtractionBtn.UseVisualStyleBackColor = false;
       this.subtractionBtn.Click += new System.EventHandler(this.subtractionBtn_Click);
       // 
       // threeBtn
@@ -232,12 +266,15 @@ namespace CalculatorApp
       this.threeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.threeBtn.Location = new System.Drawing.Point(348, 228);
+      this.threeBtn.BackColor = System.Drawing.Color.Silver;
+      this.threeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.threeBtn.Location = new System.Drawing.Point(347, 228);
+      this.threeBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.threeBtn.Name = "threeBtn";
-      this.threeBtn.Size = new System.Drawing.Size(63, 69);
+      this.threeBtn.Size = new System.Drawing.Size(65, 69);
       this.threeBtn.TabIndex = 26;
       this.threeBtn.Text = "3";
-      this.threeBtn.UseVisualStyleBackColor = true;
+      this.threeBtn.UseVisualStyleBackColor = false;
       this.threeBtn.Click += new System.EventHandler(this.threeBtn_Click);
       // 
       // twoBtn
@@ -245,12 +282,15 @@ namespace CalculatorApp
       this.twoBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.twoBtn.Location = new System.Drawing.Point(279, 228);
+      this.twoBtn.BackColor = System.Drawing.Color.Silver;
+      this.twoBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.twoBtn.Location = new System.Drawing.Point(278, 228);
+      this.twoBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.twoBtn.Name = "twoBtn";
-      this.twoBtn.Size = new System.Drawing.Size(63, 69);
+      this.twoBtn.Size = new System.Drawing.Size(65, 69);
       this.twoBtn.TabIndex = 25;
       this.twoBtn.Text = "2";
-      this.twoBtn.UseVisualStyleBackColor = true;
+      this.twoBtn.UseVisualStyleBackColor = false;
       this.twoBtn.Click += new System.EventHandler(this.twoBtn_Click);
       // 
       // oneBtn
@@ -258,12 +298,15 @@ namespace CalculatorApp
       this.oneBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.oneBtn.Location = new System.Drawing.Point(210, 228);
+      this.oneBtn.BackColor = System.Drawing.Color.Silver;
+      this.oneBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.oneBtn.Location = new System.Drawing.Point(209, 228);
+      this.oneBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.oneBtn.Name = "oneBtn";
-      this.oneBtn.Size = new System.Drawing.Size(63, 69);
+      this.oneBtn.Size = new System.Drawing.Size(65, 69);
       this.oneBtn.TabIndex = 24;
       this.oneBtn.Text = "1";
-      this.oneBtn.UseVisualStyleBackColor = true;
+      this.oneBtn.UseVisualStyleBackColor = false;
       this.oneBtn.Click += new System.EventHandler(this.oneBtn_Click);
       // 
       // squareRootBtn
@@ -271,12 +314,15 @@ namespace CalculatorApp
       this.squareRootBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.squareRootBtn.Location = new System.Drawing.Point(141, 228);
+      this.squareRootBtn.BackColor = System.Drawing.Color.Gray;
+      this.squareRootBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.squareRootBtn.Location = new System.Drawing.Point(140, 228);
+      this.squareRootBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.squareRootBtn.Name = "squareRootBtn";
-      this.squareRootBtn.Size = new System.Drawing.Size(63, 69);
+      this.squareRootBtn.Size = new System.Drawing.Size(65, 69);
       this.squareRootBtn.TabIndex = 23;
       this.squareRootBtn.Text = "√";
-      this.squareRootBtn.UseVisualStyleBackColor = true;
+      this.squareRootBtn.UseVisualStyleBackColor = false;
       this.squareRootBtn.Click += new System.EventHandler(this.squareRootBtn_Click);
       // 
       // tanBtn
@@ -284,12 +330,15 @@ namespace CalculatorApp
       this.tanBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tanBtn.Location = new System.Drawing.Point(72, 228);
+      this.tanBtn.BackColor = System.Drawing.Color.Gray;
+      this.tanBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.tanBtn.Location = new System.Drawing.Point(71, 228);
+      this.tanBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.tanBtn.Name = "tanBtn";
-      this.tanBtn.Size = new System.Drawing.Size(63, 69);
+      this.tanBtn.Size = new System.Drawing.Size(65, 69);
       this.tanBtn.TabIndex = 22;
       this.tanBtn.Text = "tan";
-      this.tanBtn.UseVisualStyleBackColor = true;
+      this.tanBtn.UseVisualStyleBackColor = false;
       this.tanBtn.Click += new System.EventHandler(this.tanBtn_Click);
       // 
       // eBtn
@@ -297,12 +346,15 @@ namespace CalculatorApp
       this.eBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.eBtn.Location = new System.Drawing.Point(3, 228);
+      this.eBtn.BackColor = System.Drawing.Color.Gray;
+      this.eBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.eBtn.Location = new System.Drawing.Point(2, 228);
+      this.eBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.eBtn.Name = "eBtn";
-      this.eBtn.Size = new System.Drawing.Size(63, 69);
+      this.eBtn.Size = new System.Drawing.Size(65, 69);
       this.eBtn.TabIndex = 21;
       this.eBtn.Text = "e";
-      this.eBtn.UseVisualStyleBackColor = true;
+      this.eBtn.UseVisualStyleBackColor = false;
       this.eBtn.Click += new System.EventHandler(this.eBtn_Click);
       // 
       // multiplicationBtn
@@ -310,12 +362,15 @@ namespace CalculatorApp
       this.multiplicationBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.multiplicationBtn.Location = new System.Drawing.Point(417, 153);
+      this.multiplicationBtn.BackColor = System.Drawing.Color.DarkOrange;
+      this.multiplicationBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.multiplicationBtn.Location = new System.Drawing.Point(416, 153);
+      this.multiplicationBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.multiplicationBtn.Name = "multiplicationBtn";
-      this.multiplicationBtn.Size = new System.Drawing.Size(65, 69);
+      this.multiplicationBtn.Size = new System.Drawing.Size(70, 69);
       this.multiplicationBtn.TabIndex = 20;
       this.multiplicationBtn.Text = "×";
-      this.multiplicationBtn.UseVisualStyleBackColor = true;
+      this.multiplicationBtn.UseVisualStyleBackColor = false;
       this.multiplicationBtn.Click += new System.EventHandler(this.multiplicationBtn_Click);
       // 
       // sixBtn
@@ -323,12 +378,15 @@ namespace CalculatorApp
       this.sixBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.sixBtn.Location = new System.Drawing.Point(348, 153);
+      this.sixBtn.BackColor = System.Drawing.Color.Silver;
+      this.sixBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.sixBtn.Location = new System.Drawing.Point(347, 153);
+      this.sixBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.sixBtn.Name = "sixBtn";
-      this.sixBtn.Size = new System.Drawing.Size(63, 69);
+      this.sixBtn.Size = new System.Drawing.Size(65, 69);
       this.sixBtn.TabIndex = 19;
       this.sixBtn.Text = "6";
-      this.sixBtn.UseVisualStyleBackColor = true;
+      this.sixBtn.UseVisualStyleBackColor = false;
       this.sixBtn.Click += new System.EventHandler(this.sixBtn_Click);
       // 
       // fiveBtn
@@ -336,12 +394,15 @@ namespace CalculatorApp
       this.fiveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.fiveBtn.Location = new System.Drawing.Point(279, 153);
+      this.fiveBtn.BackColor = System.Drawing.Color.Silver;
+      this.fiveBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.fiveBtn.Location = new System.Drawing.Point(278, 153);
+      this.fiveBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.fiveBtn.Name = "fiveBtn";
-      this.fiveBtn.Size = new System.Drawing.Size(63, 69);
+      this.fiveBtn.Size = new System.Drawing.Size(65, 69);
       this.fiveBtn.TabIndex = 18;
       this.fiveBtn.Text = "5";
-      this.fiveBtn.UseVisualStyleBackColor = true;
+      this.fiveBtn.UseVisualStyleBackColor = false;
       this.fiveBtn.Click += new System.EventHandler(this.fiveBtn_Click);
       // 
       // fourBtn
@@ -349,12 +410,15 @@ namespace CalculatorApp
       this.fourBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.fourBtn.Location = new System.Drawing.Point(210, 153);
+      this.fourBtn.BackColor = System.Drawing.Color.Silver;
+      this.fourBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.fourBtn.Location = new System.Drawing.Point(209, 153);
+      this.fourBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.fourBtn.Name = "fourBtn";
-      this.fourBtn.Size = new System.Drawing.Size(63, 69);
+      this.fourBtn.Size = new System.Drawing.Size(65, 69);
       this.fourBtn.TabIndex = 17;
       this.fourBtn.Text = "4";
-      this.fourBtn.UseVisualStyleBackColor = true;
+      this.fourBtn.UseVisualStyleBackColor = false;
       this.fourBtn.Click += new System.EventHandler(this.fourBtn_Click);
       // 
       // logBtn
@@ -362,12 +426,15 @@ namespace CalculatorApp
       this.logBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.logBtn.Location = new System.Drawing.Point(141, 153);
+      this.logBtn.BackColor = System.Drawing.Color.Gray;
+      this.logBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.logBtn.Location = new System.Drawing.Point(140, 153);
+      this.logBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.logBtn.Name = "logBtn";
-      this.logBtn.Size = new System.Drawing.Size(63, 69);
+      this.logBtn.Size = new System.Drawing.Size(65, 69);
       this.logBtn.TabIndex = 16;
       this.logBtn.Text = "log";
-      this.logBtn.UseVisualStyleBackColor = true;
+      this.logBtn.UseVisualStyleBackColor = false;
       this.logBtn.Click += new System.EventHandler(this.logBtn_Click);
       // 
       // cosBtn
@@ -375,12 +442,15 @@ namespace CalculatorApp
       this.cosBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.cosBtn.Location = new System.Drawing.Point(72, 153);
+      this.cosBtn.BackColor = System.Drawing.Color.Gray;
+      this.cosBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.cosBtn.Location = new System.Drawing.Point(71, 153);
+      this.cosBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.cosBtn.Name = "cosBtn";
-      this.cosBtn.Size = new System.Drawing.Size(63, 69);
+      this.cosBtn.Size = new System.Drawing.Size(65, 69);
       this.cosBtn.TabIndex = 15;
       this.cosBtn.Text = "cos";
-      this.cosBtn.UseVisualStyleBackColor = true;
+      this.cosBtn.UseVisualStyleBackColor = false;
       this.cosBtn.Click += new System.EventHandler(this.cosBtn_Click);
       // 
       // piBtn
@@ -388,12 +458,15 @@ namespace CalculatorApp
       this.piBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.piBtn.Location = new System.Drawing.Point(3, 153);
+      this.piBtn.BackColor = System.Drawing.Color.Gray;
+      this.piBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.piBtn.Location = new System.Drawing.Point(2, 153);
+      this.piBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.piBtn.Name = "piBtn";
-      this.piBtn.Size = new System.Drawing.Size(63, 69);
+      this.piBtn.Size = new System.Drawing.Size(65, 69);
       this.piBtn.TabIndex = 14;
       this.piBtn.Text = "π";
-      this.piBtn.UseVisualStyleBackColor = true;
+      this.piBtn.UseVisualStyleBackColor = false;
       this.piBtn.Click += new System.EventHandler(this.piBtn_Click);
       // 
       // divisionBtn
@@ -401,12 +474,15 @@ namespace CalculatorApp
       this.divisionBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.divisionBtn.Location = new System.Drawing.Point(417, 78);
+      this.divisionBtn.BackColor = System.Drawing.Color.DarkOrange;
+      this.divisionBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.divisionBtn.Location = new System.Drawing.Point(416, 78);
+      this.divisionBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.divisionBtn.Name = "divisionBtn";
-      this.divisionBtn.Size = new System.Drawing.Size(65, 69);
+      this.divisionBtn.Size = new System.Drawing.Size(70, 69);
       this.divisionBtn.TabIndex = 13;
       this.divisionBtn.Text = "÷";
-      this.divisionBtn.UseVisualStyleBackColor = true;
+      this.divisionBtn.UseVisualStyleBackColor = false;
       this.divisionBtn.Click += new System.EventHandler(this.divisionBtn_Click);
       // 
       // nineBtn
@@ -414,12 +490,15 @@ namespace CalculatorApp
       this.nineBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.nineBtn.Location = new System.Drawing.Point(348, 78);
+      this.nineBtn.BackColor = System.Drawing.Color.Silver;
+      this.nineBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.nineBtn.Location = new System.Drawing.Point(347, 78);
+      this.nineBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.nineBtn.Name = "nineBtn";
-      this.nineBtn.Size = new System.Drawing.Size(63, 69);
+      this.nineBtn.Size = new System.Drawing.Size(65, 69);
       this.nineBtn.TabIndex = 12;
       this.nineBtn.Text = "9";
-      this.nineBtn.UseVisualStyleBackColor = true;
+      this.nineBtn.UseVisualStyleBackColor = false;
       this.nineBtn.Click += new System.EventHandler(this.nineBtn_Click);
       // 
       // eightBtn
@@ -427,12 +506,15 @@ namespace CalculatorApp
       this.eightBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.eightBtn.Location = new System.Drawing.Point(279, 78);
+      this.eightBtn.BackColor = System.Drawing.Color.Silver;
+      this.eightBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.eightBtn.Location = new System.Drawing.Point(278, 78);
+      this.eightBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.eightBtn.Name = "eightBtn";
-      this.eightBtn.Size = new System.Drawing.Size(63, 69);
+      this.eightBtn.Size = new System.Drawing.Size(65, 69);
       this.eightBtn.TabIndex = 11;
       this.eightBtn.Text = "8";
-      this.eightBtn.UseVisualStyleBackColor = true;
+      this.eightBtn.UseVisualStyleBackColor = false;
       this.eightBtn.Click += new System.EventHandler(this.eightBtn_Click);
       // 
       // sevenBtn
@@ -440,12 +522,15 @@ namespace CalculatorApp
       this.sevenBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.sevenBtn.Location = new System.Drawing.Point(210, 78);
+      this.sevenBtn.BackColor = System.Drawing.Color.Silver;
+      this.sevenBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.sevenBtn.Location = new System.Drawing.Point(209, 78);
+      this.sevenBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.sevenBtn.Name = "sevenBtn";
-      this.sevenBtn.Size = new System.Drawing.Size(63, 69);
+      this.sevenBtn.Size = new System.Drawing.Size(65, 69);
       this.sevenBtn.TabIndex = 10;
       this.sevenBtn.Text = "7";
-      this.sevenBtn.UseVisualStyleBackColor = true;
+      this.sevenBtn.UseVisualStyleBackColor = false;
       this.sevenBtn.Click += new System.EventHandler(this.sevenBtn_Click);
       // 
       // lnBtn
@@ -453,12 +538,15 @@ namespace CalculatorApp
       this.lnBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.lnBtn.Location = new System.Drawing.Point(141, 78);
+      this.lnBtn.BackColor = System.Drawing.Color.Gray;
+      this.lnBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.lnBtn.Location = new System.Drawing.Point(140, 78);
+      this.lnBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.lnBtn.Name = "lnBtn";
-      this.lnBtn.Size = new System.Drawing.Size(63, 69);
+      this.lnBtn.Size = new System.Drawing.Size(65, 69);
       this.lnBtn.TabIndex = 9;
       this.lnBtn.Text = "ln";
-      this.lnBtn.UseVisualStyleBackColor = true;
+      this.lnBtn.UseVisualStyleBackColor = false;
       this.lnBtn.Click += new System.EventHandler(this.lnBtn_Click);
       // 
       // sinBtn
@@ -466,12 +554,15 @@ namespace CalculatorApp
       this.sinBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.sinBtn.Location = new System.Drawing.Point(72, 78);
+      this.sinBtn.BackColor = System.Drawing.Color.Gray;
+      this.sinBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.sinBtn.Location = new System.Drawing.Point(71, 78);
+      this.sinBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.sinBtn.Name = "sinBtn";
-      this.sinBtn.Size = new System.Drawing.Size(63, 69);
+      this.sinBtn.Size = new System.Drawing.Size(65, 69);
       this.sinBtn.TabIndex = 8;
       this.sinBtn.Text = "sin";
-      this.sinBtn.UseVisualStyleBackColor = true;
+      this.sinBtn.UseVisualStyleBackColor = false;
       this.sinBtn.Click += new System.EventHandler(this.sinBtn_Click);
       // 
       // shiftBtn
@@ -479,12 +570,15 @@ namespace CalculatorApp
       this.shiftBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.shiftBtn.Location = new System.Drawing.Point(3, 78);
+      this.shiftBtn.BackColor = System.Drawing.Color.Gray;
+      this.shiftBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.shiftBtn.Location = new System.Drawing.Point(2, 78);
+      this.shiftBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.shiftBtn.Name = "shiftBtn";
-      this.shiftBtn.Size = new System.Drawing.Size(63, 69);
+      this.shiftBtn.Size = new System.Drawing.Size(65, 69);
       this.shiftBtn.TabIndex = 7;
       this.shiftBtn.Text = "Shift";
-      this.shiftBtn.UseVisualStyleBackColor = true;
+      this.shiftBtn.UseVisualStyleBackColor = false;
       this.shiftBtn.Click += new System.EventHandler(this.shiftBtn_Click);
       // 
       // clearBtn
@@ -492,12 +586,15 @@ namespace CalculatorApp
       this.clearBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.clearBtn.Location = new System.Drawing.Point(417, 3);
+      this.clearBtn.BackColor = System.Drawing.Color.Maroon;
+      this.clearBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.clearBtn.Location = new System.Drawing.Point(416, 3);
+      this.clearBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.clearBtn.Name = "clearBtn";
-      this.clearBtn.Size = new System.Drawing.Size(65, 69);
+      this.clearBtn.Size = new System.Drawing.Size(70, 69);
       this.clearBtn.TabIndex = 6;
       this.clearBtn.Text = "AC";
-      this.clearBtn.UseVisualStyleBackColor = true;
+      this.clearBtn.UseVisualStyleBackColor = false;
       this.clearBtn.Click += new System.EventHandler(this.clearBtn_Click);
       // 
       // backspaceBtn
@@ -505,12 +602,16 @@ namespace CalculatorApp
       this.backspaceBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.backspaceBtn.Location = new System.Drawing.Point(348, 3);
+      this.backspaceBtn.BackColor = System.Drawing.Color.Maroon;
+      this.backspaceBtn.FlatAppearance.BorderColor = System.Drawing.Color.White;
+      this.backspaceBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.backspaceBtn.Location = new System.Drawing.Point(347, 3);
+      this.backspaceBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.backspaceBtn.Name = "backspaceBtn";
-      this.backspaceBtn.Size = new System.Drawing.Size(63, 69);
+      this.backspaceBtn.Size = new System.Drawing.Size(65, 69);
       this.backspaceBtn.TabIndex = 5;
       this.backspaceBtn.Text = "⌫";
-      this.backspaceBtn.UseVisualStyleBackColor = true;
+      this.backspaceBtn.UseVisualStyleBackColor = false;
       this.backspaceBtn.Click += new System.EventHandler(this.backspaceBtn_Click);
       // 
       // rightBracketBtn
@@ -518,12 +619,15 @@ namespace CalculatorApp
       this.rightBracketBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.rightBracketBtn.Location = new System.Drawing.Point(279, 3);
+      this.rightBracketBtn.BackColor = System.Drawing.Color.Gray;
+      this.rightBracketBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.rightBracketBtn.Location = new System.Drawing.Point(278, 3);
+      this.rightBracketBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.rightBracketBtn.Name = "rightBracketBtn";
-      this.rightBracketBtn.Size = new System.Drawing.Size(63, 69);
+      this.rightBracketBtn.Size = new System.Drawing.Size(65, 69);
       this.rightBracketBtn.TabIndex = 4;
       this.rightBracketBtn.Text = ")";
-      this.rightBracketBtn.UseVisualStyleBackColor = true;
+      this.rightBracketBtn.UseVisualStyleBackColor = false;
       this.rightBracketBtn.Click += new System.EventHandler(this.rightBracketBtn_Click);
       // 
       // leftBracketBtn
@@ -531,12 +635,15 @@ namespace CalculatorApp
       this.leftBracketBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.leftBracketBtn.Location = new System.Drawing.Point(210, 3);
+      this.leftBracketBtn.BackColor = System.Drawing.Color.Gray;
+      this.leftBracketBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.leftBracketBtn.Location = new System.Drawing.Point(209, 3);
+      this.leftBracketBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.leftBracketBtn.Name = "leftBracketBtn";
-      this.leftBracketBtn.Size = new System.Drawing.Size(63, 69);
+      this.leftBracketBtn.Size = new System.Drawing.Size(65, 69);
       this.leftBracketBtn.TabIndex = 3;
       this.leftBracketBtn.Text = "(";
-      this.leftBracketBtn.UseVisualStyleBackColor = true;
+      this.leftBracketBtn.UseVisualStyleBackColor = false;
       this.leftBracketBtn.Click += new System.EventHandler(this.leftBracketBtn_Click);
       // 
       // factorialBtn
@@ -544,12 +651,15 @@ namespace CalculatorApp
       this.factorialBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.factorialBtn.Location = new System.Drawing.Point(141, 3);
+      this.factorialBtn.BackColor = System.Drawing.Color.Gray;
+      this.factorialBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.factorialBtn.Location = new System.Drawing.Point(140, 3);
+      this.factorialBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.factorialBtn.Name = "factorialBtn";
-      this.factorialBtn.Size = new System.Drawing.Size(63, 69);
+      this.factorialBtn.Size = new System.Drawing.Size(65, 69);
       this.factorialBtn.TabIndex = 2;
       this.factorialBtn.Text = "n!";
-      this.factorialBtn.UseVisualStyleBackColor = true;
+      this.factorialBtn.UseVisualStyleBackColor = false;
       this.factorialBtn.Click += new System.EventHandler(this.factorialBtn_Click);
       // 
       // radDegBtn
@@ -557,12 +667,15 @@ namespace CalculatorApp
       this.radDegBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.radDegBtn.Location = new System.Drawing.Point(3, 3);
+      this.radDegBtn.BackColor = System.Drawing.Color.Gray;
+      this.radDegBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.radDegBtn.Location = new System.Drawing.Point(2, 3);
+      this.radDegBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.radDegBtn.Name = "radDegBtn";
-      this.radDegBtn.Size = new System.Drawing.Size(63, 69);
+      this.radDegBtn.Size = new System.Drawing.Size(65, 69);
       this.radDegBtn.TabIndex = 36;
       this.radDegBtn.Text = "Rad";
-      this.radDegBtn.UseVisualStyleBackColor = true;
+      this.radDegBtn.UseVisualStyleBackColor = false;
       this.radDegBtn.Click += new System.EventHandler(this.radDegBtn_Click);
       // 
       // expBtn
@@ -570,12 +683,15 @@ namespace CalculatorApp
       this.expBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.expBtn.Location = new System.Drawing.Point(72, 3);
+      this.expBtn.BackColor = System.Drawing.Color.Gray;
+      this.expBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.expBtn.Location = new System.Drawing.Point(71, 3);
+      this.expBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.expBtn.Name = "expBtn";
-      this.expBtn.Size = new System.Drawing.Size(63, 69);
+      this.expBtn.Size = new System.Drawing.Size(65, 69);
       this.expBtn.TabIndex = 1;
       this.expBtn.Text = "EXP";
-      this.expBtn.UseVisualStyleBackColor = true;
+      this.expBtn.UseVisualStyleBackColor = false;
       this.expBtn.Click += new System.EventHandler(this.expBtn_Click);
       // 
       // percentBtn
@@ -583,13 +699,16 @@ namespace CalculatorApp
       this.percentBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.percentBtn.Location = new System.Drawing.Point(72, 303);
+      this.percentBtn.BackColor = System.Drawing.Color.Gray;
+      this.percentBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.percentBtn.Location = new System.Drawing.Point(71, 303);
+      this.percentBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.percentBtn.Name = "percentBtn";
       this.percentBtn.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-      this.percentBtn.Size = new System.Drawing.Size(63, 70);
+      this.percentBtn.Size = new System.Drawing.Size(65, 70);
       this.percentBtn.TabIndex = 29;
       this.percentBtn.Text = "%";
-      this.percentBtn.UseVisualStyleBackColor = true;
+      this.percentBtn.UseVisualStyleBackColor = false;
       this.percentBtn.Click += new System.EventHandler(this.percentBtn_Click);
       // 
       // additionBtn
@@ -597,12 +716,15 @@ namespace CalculatorApp
       this.additionBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.additionBtn.Location = new System.Drawing.Point(417, 303);
+      this.additionBtn.BackColor = System.Drawing.Color.DarkOrange;
+      this.additionBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.additionBtn.Location = new System.Drawing.Point(416, 303);
+      this.additionBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.additionBtn.Name = "additionBtn";
-      this.additionBtn.Size = new System.Drawing.Size(65, 70);
+      this.additionBtn.Size = new System.Drawing.Size(70, 70);
       this.additionBtn.TabIndex = 35;
       this.additionBtn.Text = "+";
-      this.additionBtn.UseVisualStyleBackColor = true;
+      this.additionBtn.UseVisualStyleBackColor = false;
       this.additionBtn.Click += new System.EventHandler(this.additionBtn_Click);
       // 
       // periodBtn
@@ -610,12 +732,15 @@ namespace CalculatorApp
       this.periodBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.periodBtn.Location = new System.Drawing.Point(210, 303);
+      this.periodBtn.BackColor = System.Drawing.Color.Silver;
+      this.periodBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.periodBtn.Location = new System.Drawing.Point(209, 303);
+      this.periodBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.periodBtn.Name = "periodBtn";
-      this.periodBtn.Size = new System.Drawing.Size(63, 70);
+      this.periodBtn.Size = new System.Drawing.Size(65, 70);
       this.periodBtn.TabIndex = 32;
       this.periodBtn.Text = ".";
-      this.periodBtn.UseVisualStyleBackColor = true;
+      this.periodBtn.UseVisualStyleBackColor = false;
       this.periodBtn.Click += new System.EventHandler(this.periodBtn_Click);
       // 
       // zeroBtn
@@ -623,12 +748,15 @@ namespace CalculatorApp
       this.zeroBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.zeroBtn.Location = new System.Drawing.Point(279, 303);
+      this.zeroBtn.BackColor = System.Drawing.Color.Silver;
+      this.zeroBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      this.zeroBtn.Location = new System.Drawing.Point(278, 303);
+      this.zeroBtn.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.zeroBtn.Name = "zeroBtn";
-      this.zeroBtn.Size = new System.Drawing.Size(63, 70);
+      this.zeroBtn.Size = new System.Drawing.Size(65, 70);
       this.zeroBtn.TabIndex = 31;
       this.zeroBtn.Text = "0";
-      this.zeroBtn.UseVisualStyleBackColor = true;
+      this.zeroBtn.UseVisualStyleBackColor = false;
       this.zeroBtn.Click += new System.EventHandler(this.zeroBtn_Click);
       // 
       // outputTextBox
@@ -639,14 +767,14 @@ namespace CalculatorApp
       this.outputTextBox.BackColor = System.Drawing.SystemColors.Window;
       this.outputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.outputTextBox.DetectUrls = false;
-      this.outputTextBox.Font = new System.Drawing.Font("Comic Sans MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+      this.outputTextBox.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
       this.outputTextBox.Location = new System.Drawing.Point(5, 5);
       this.outputTextBox.Margin = new System.Windows.Forms.Padding(5);
       this.outputTextBox.Name = "outputTextBox";
       this.outputTextBox.ReadOnly = true;
       this.outputTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
       this.outputTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-      this.outputTextBox.Size = new System.Drawing.Size(481, 98);
+      this.outputTextBox.Size = new System.Drawing.Size(482, 98);
       this.outputTextBox.TabIndex = 1;
       this.outputTextBox.Text = "";
       // 
@@ -657,13 +785,14 @@ namespace CalculatorApp
             | System.Windows.Forms.AnchorStyles.Right)));
       this.inputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.inputTextBox.DetectUrls = false;
-      this.inputTextBox.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-      this.inputTextBox.Location = new System.Drawing.Point(3, 111);
+      this.inputTextBox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+      this.inputTextBox.Location = new System.Drawing.Point(2, 111);
+      this.inputTextBox.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
       this.inputTextBox.Multiline = false;
       this.inputTextBox.Name = "inputTextBox";
       this.inputTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
       this.inputTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-      this.inputTextBox.Size = new System.Drawing.Size(485, 48);
+      this.inputTextBox.Size = new System.Drawing.Size(488, 48);
       this.inputTextBox.TabIndex = 2;
       this.inputTextBox.Text = "";
       // 
@@ -674,12 +803,15 @@ namespace CalculatorApp
       this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
       this.BackColor = System.Drawing.Color.White;
       this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-      this.ClientSize = new System.Drawing.Size(500, 550);
+      this.ClientSize = new System.Drawing.Size(499, 550);
       this.Controls.Add(this.tableLayoutPanel1);
       this.Controls.Add(this.dataGridView1);
-      this.MinimumSize = new System.Drawing.Size(500, 550);
+      this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+      this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+      this.MinimumSize = new System.Drawing.Size(501, 550);
       this.Name = "calculatorForm";
-      this.Padding = new System.Windows.Forms.Padding(3, 64, 0, 0);
+      this.Padding = new System.Windows.Forms.Padding(2, 64, 0, 0);
       this.Text = "Calculator";
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
       this.tableLayoutPanel1.ResumeLayout(false);

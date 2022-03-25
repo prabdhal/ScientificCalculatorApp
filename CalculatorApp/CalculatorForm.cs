@@ -21,9 +21,6 @@ namespace CalculatorApp
     bool isRad = true;
     bool errorCode = false;
 
-    private const float LARGER_FONT_FACTOR = 1.5f;
-    private const float SMALLER_FONT_FACTOR = 0.8f;
-
     private int _lastFormSize;
 
     public calculatorForm()
@@ -64,7 +61,9 @@ namespace CalculatorApp
           if (true)
           {
             // scale font
-            c.Font = new Font(c.Font.FontFamily.Name, c.Font.Size * scaleFactor);
+            float fontSize = c.Font.Size * scaleFactor;
+            if (fontSize <= 6f) fontSize = 10.5f;
+            c.Font = new Font(c.Font.FontFamily.Name, fontSize);
           }
         }
       }
